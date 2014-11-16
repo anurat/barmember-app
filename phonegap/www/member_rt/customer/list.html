@@ -1,0 +1,213 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />
+	   	<meta http-equiv=Content-Type content=text/html;charset=iso-8859-1 />
+
+        
+        <title>User list</title>
+		
+	
+    </head>
+    <body >			
+		<div data-role="page" >
+			<script type="text/javascript" src="../../js/menubar.js"></script>	
+			<div role="main" class="ui-content" >
+				<script type="text/javascript">
+					$(document).bind("mobileinit", function() {
+					$.support.cors = true;
+					$.mobile.allowCrossDomainPages = true;
+					});
+	
+		
+					$(document).on( 'pageinit',function(event){	
+					$('#searchData').keyup(function() {
+					var searchVal = $(this).val();
+					if(searchVal !== '') {
+					$.ajax({
+					type: "GET",
+					url: "http://192.168.1.111/memberws/restaurant2/search_customers/11/"+searchVal,
+					cache: false,
+					dataType: "json",
+					success: function(data){
+						$('#CustomerTable tbody').empty();
+							if(data['code'] == 2){
+				
+					
+							}else{
+								var obj = JSON.parse(JSON.stringify(data));
+								drawTable_search(obj);
+							}
+					}
+				});
+			    
+            } else {
+               
+            }
+			});
+			});
+
+
+		 
+		 
+		
+		$.ajax({
+			type: "GET",
+			url: "http://192.168.1.111/memberws/restaurant2/customers/11/1",
+			cache: false,
+			dataType: "json",
+			success: function(data){
+				$('#CustomerTable tbody').empty();
+				if(data['code'] == 2){
+				
+				
+				}else{
+					var obj = JSON.parse(JSON.stringify(data));
+					drawTable(obj);
+				
+				}
+			}
+			
+		});
+		
+
+		function drawTable_search(data) {
+		 //$("#CustomerTable").append("<tbody>");
+			for (var i = 0; i < data.length; i++) {
+				drawRow_search(data[i]);
+			}
+		 //$("#CustomerTable").append("</tbody>");
+		}
+
+		function drawRow_search(rowData) {
+			var temp_string = '';
+			var row = $("<tr />");
+			$("#CustomerTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+			row.append($("<td>" + rowData.user_id + "</td>"));
+			row.append($("<td class='td-name'>" + rowData.customer_name + "</td>"));
+			row.append($("<td>" + rowData.packages + "</td>"));
+			row.append($("<td>" + rowData.customer_phone + "</td>"));
+		}
+		
+		function drawTable(data) {
+		 //$("#CustomerTable").append("<tbody>");
+			for (var i = 0; i < data.length; i++) {
+				drawRow(data[i]);
+			}
+		 //$("#CustomerTable").append("</tbody>");
+		}
+
+		function drawRow(rowData) {
+			var temp_string = '';
+			var row = $("<tr />");
+			$("#CustomerTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+			row.append($("<td>" + rowData.user_id + "</td>"));
+			row.append($("<td class='td-name'>" + rowData.customer_name + "</td>"));
+
+				 if( 0 < rowData.packages.length ){
+					for(var j = 0 ; j < rowData.packages.length ; j++){
+						temp_string +=rowData.packages[j].package_name+" ";
+					}
+				}else {
+					temp_string = "-";	
+				}
+			row.append($("<td>" + temp_string + "</td>"));
+			row.append($("<td>" + rowData.customer_phone + "</td>"));
+		}
+		
+		
+				</script>
+		
+						<div class="content-topbutton">
+							<button id="add_user" class="ui-btn" >เพิ่มสมาชิก</button>
+						</div>
+						
+						<div data-role="fieldcontain">
+							
+							<input id="searchData" type="search" name="search-2" id="search-2" value="" />
+							<script type="text/javascript">
+							
+							</script>
+						</div>
+						
+						<div class="ui-grid-a">
+							
+							  <div class="ui-block-a">
+									 <select name="select-choice-4" id="select-choice-1"> 
+										<option value="arial">เลือกเมมเบอร์</option> 
+										<option value="papyrus">Papyrus</option> 
+										<option value="helvetica">Helvetica</option> 
+										<option value="calibri">Calibri</option> 
+										
+									</select> 
+							  </div>
+							  <div class="ui-block-b">
+									<select name="select-choice-4" id="select-choice-nc"> 
+
+										<option value="arial">เรียงตามลำดับ</option> 
+										<option value="papyrus">Papyrus</option> 
+										<option value="helvetica">Helvetica</option> 
+										<option value="calibri">Calibri</option> 
+
+									</select> 
+							  </div>
+							  
+						</div>
+						
+						<div class="content-table">
+							 <table id="CustomerTable" data-role="table" class="ui-responsive">
+							  <thead>
+								<tr>
+								  <th>ID.</th>
+								  <th>ชื่อสมาชิก</th>
+								  <th>เมมเบอร์</th>
+								  <th>หมดอายุ</th>
+								</tr>
+							  </thead>
+							  <tbody>
+								<tr>
+								  <td>12345</td>
+								  <td class="td-name">Alfreds Futterkiste</td>
+								  <td>VIP 01</td>
+								  <td>15 มิ.ย. 57</td>
+								</tr>
+								<tr>
+								  <td>12346</td>
+								  <td class="td-name">Antonio Moreno Taquería</td>
+								  <td>VIP 02</td>
+								  <td>15 มิ.ย. 57</td> 
+								</tr>
+								<tr>
+								  <td>12347</td>
+								  <td class="td-name">Around the Horn</td>
+								  <td>VIP 03</td>
+								  <td>15 มิ.ย. 57</td>
+								</tr>
+								<tr>
+								  <td>12348</td>
+								  <td class="td-name">Berglunds snabbköp</td>
+								  <td>VIP 04</td>
+								  <td>15 มิ.ย. 57</td>
+								</tr>
+							  </tbody>
+							</table>
+						</div>
+	
+			</div>
+		<script type="text/javascript">
+
+			$('#add_user').click(function() {
+			    
+				$.mobile.changePage('../customer/add.html', { transition: "slideup", changeHash: true });
+			});
+		
+        </script>
+		</div>
+
+		
+		
+    </body>
+</html>

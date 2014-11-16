@@ -1,0 +1,304 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+     
+		<meta name="msapplication-tap-highlight" content="no" />
+	    <meta http-equiv=Content-Type content=text/html;charset=iso-8859-1 />
+
+        
+        <title>Hello World</title>
+		
+		
+		<!-- JS -->
+
+		<!--<script src="../js/header.js"></script>-->
+	
+		
+		<!-- CSS -->
+			<link rel="stylesheet" href="../../css/jquery-ui-1.10.3.custom.min.css" />
+		<link rel="stylesheet" href="../../css/jquery.mobile-1.4.2.min.css" />
+	
+		<link rel="stylesheet" href="../../css/styles.css" />
+		
+	
+		
+    </head>
+	
+	
+	
+    <body>
+		<div data-role="page">
+				<script type="text/javascript">
+		var User_imageURI;
+		$(document).bind("mobileinit", function() {
+			$.support.cors = true;
+			$.mobile.allowCrossDomainPages = true;
+		});
+		 $(function() {
+			$( "#brithday" ).datepicker({	
+			dateFormat: "dd/mm/yy"
+			});
+		});
+		
+		
+		$(document).ready( function() {
+		
+    		$('#add_form').validate({
+    			rules: {
+    				email: {
+    					required: true,
+    					email: true
+    				},
+    				user_id: "required",
+    				username: "required",
+					brithday: "required",
+    				phone_number: "required"
+    			},
+				submitHandler: function(form) {
+					ajax_add_user();
+						
+				 $("#username").val("");
+				 $("#email").val("");
+				 $("#brithday").val("");
+				 $("#phone_number").val("");
+				 $("#user_id").val("");
+				 $("#type").val("");
+				
+				}
+			});
+			
+    	});
+		
+		var pictureSource;   
+		var destinationType; 
+
+		document.addEventListener("deviceready",onDeviceReady,false);
+
+		function onDeviceReady() 
+		{
+			pictureSource=navigator.camera.PictureSourceType;
+			destinationType=navigator.camera.DestinationType;
+		}
+
+		function onPhotoURISuccess(imageURI) 
+		{	
+			alert(imageURI);
+			console.log(imageURI);
+			var largeImage = document.getElementById('largeImage');
+			largeImage.style.display = 'block';
+			largeImage.src = imageURI;
+		}
+
+		function onPhotoDataSuccess(imageURI) 
+		{ 
+			alert(imageURI);
+			var imgProfile = document.getElementById('largeImage');
+			imgProfile.src =  imageURI;
+			if(sessionStorage.isprofileimage==1)
+			{
+				getLocation();
+			}
+			//movePic(imageURI);
+		}
+
+		function onFail(message) 
+		{
+			alert('Failed because: ' + message);
+		}
+
+		function movePic(file)
+		{ 
+			window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError); 
+		} 
+
+		function resolveOnSuccess(entry)
+		{ 
+			var d = new Date();
+			var n = d.getTime();
+			var newFileName = n + ".jpg";
+			var myFolderApp = "MyAppFolder";
+			window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) 
+			{      
+				
+				fileSys.root.getDirectory( myFolderApp,
+                {create:true, exclusive: false},
+                function(directory) 
+                {
+                    entry.moveTo(directory, newFileName,  successMove, resOnError);
+                },
+				resOnError);
+			},
+			resOnError);
+		}
+
+function successMove(entry) 
+{
+    sessionStorage.setItem('imagepath', entry.fullPath);
+}
+
+function resOnError(error) 
+{
+    alert("resOnError "+error.code);
+}
+
+function capturePhoto() 
+{
+    navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+    destinationType: Camera.DestinationType.FILE_URI,
+ correctOrientation: true	});
+}
+
+function getPhoto(source) 
+{
+    navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+    destinationType: destinationType.FILE_URI,
+	 correctOrientation: true,
+    sourceType: source });
+}
+
+function onFail(message) 
+{
+    alert('Failed because: ' + message);
+}
+		
+		function ajax_add_user(){
+					
+				var username = $("#username").val();
+				var email = $("#email").val();
+				var brithday = $("#brithday").val();
+				var phone = $("#phone_number").val();
+				var user_id = $("#user_id").val();
+				var customer_type = $("#type").val();
+				var password = "123";
+				var restaurant_id = 1;
+				var note = " Testing CUSTOMER"
+				var action = "ADD_METHOD";
+				$.ajax({
+					type: 'POST',
+					url: 'http://192.168.1.111/memberws/customers2/customer/11/',
+					data: "action="+action+ "&name=" + username + "&email=" +email 
+					+ "&phone=" +  phone+"&brithday="+ brithday + "&restaurant_id=" +  restaurant_id+"&password="+ password
+					+ "&user_id="+user_id + "&customer_type=" + customer_type+"&note="+note  ,
+					cache: false,
+					dataType:  "json",
+					success: function(data){
+				
+						if(data['status'] == "SUCCESS"){
+							alert(data['status']);
+							
+						}else{
+							alert(data['status']);
+							
+						}
+					},
+					error: function(msg) {
+						console.log('failure' + msg );
+					}
+				});
+				
+		}
+		
+		function refreshPage() {
+			$.mobile.changePage(
+			window.location.href,
+			{
+				allowSamePageTransition : true,
+				transition              : 'none',
+				showLoadMsg             : false,
+				reloadPage              : true
+			}
+			);
+		}
+
+		
+		</script>
+			<div role="main" class="ui-content">
+			<form id="add_form" >
+					<div class="user-image">
+					   <img src="../../img/logo.jpg" alt="log" class="img-logo" id="largeImage"/></br>
+					</div>
+						
+					<fieldset class="ui-grid-a">
+						<div class="ui-block-a"> <button class="ui-btn" onclick="capturePhoto();">Capture Photo</button> </div>
+						<div class="ui-block-b"> <button class="ui-btn" onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Gallery!!</button> </div>
+					</fieldset>	
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="user_id">ไอดี</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="user_id" id="user_id" value="" class="ui-submit" onfocus="this.style.bakgroundColor='red'" onblur="this.style.bakgroundColor='white'"/>
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="username">ชื่อสมาชิก</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="username" id='username' value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="phone_number">เบอร์มือถือ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="phone_number" id="phone_number" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="brithday">วันเกิด</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="brithday" id="brithday" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="email">อีเมล์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="email" id="email" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="type">ประเภท</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="type" id="type" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle user-add">
+					  <div class="">
+						<!-- <input type="button" id="next" VALUE="เพิ่มสมาชิก" onClick="ajax_add_user()" class="ui-btn""/>-->
+						<button class="ui-btn" type="submit" >เพิ่มสมาชิก</button> 
+					  </div>
+					  
+					</div>
+			</form>
+			</div>
+		</div>
+    </body>
+</html>

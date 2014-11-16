@@ -1,0 +1,14 @@
+
+
+Phonegap: Keyboard changes window height in iOS 7
+http://stackoverflow.com/questions/19169115/phonegap-keyboard-changes-window-height-in-ios-7
+
+window.resize due to virtual keyboard causes issues with jquery mobile
+http://stackoverflow.com/questions/12879857/window-resize-due-to-virtual-keyboard-causes-issues-with-jquery-mobile
+page content dont scroll whent keyboard shows phonegap
+http://stackoverflow.com/questions/16137348/page-content-dont-scroll-whent-keyboard-shows-phonegap/17104491#17104491
+
+https://github.com/jquery/jquery-mobile/issues/1079
+
+ Virtual keyboard hides text input (tested on Iphone and Android) #1079 
+https://github.com/jquery/jquery-mobile/issues/1079

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	   <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />
+        <title>MEMBER DEMO APP</title>
+		
+		<!-- JS -->
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../js/jquery.mobile-1.4.3.min.js"></script>
+		<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="../js/jquery.validate.min.js"></script>
+		<script src="../js/footable.js"></script>	
+		<script src="../js/footable.sort.js" ></script>
+		<script type="text/javascript" src="../cordova.js"></script>
+		<script src="../js/script.js"></script>
+		
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<link rel="stylesheet" href="../css/jquery.mobile-1.4.3.min.css" />
+		<link rel="stylesheet" href="../css/styles.css" />
+		<link rel="stylesheet" href="../css/jquery-ui-1.10.3.custom.min.css"/>
+		<link href="../css/footable.core.min.css" rel="stylesheet" type="text/css" />
+    
+	</head>
+	
+    <body>
+		<div id="container">
+		<div data-role="page"   id="message_list" class="ui-responsive-panel">
+				<div data-role="content" class="scrollable ui-content scroll-list">
+						<div >
+							<div class="content-topbutton">
+								<button class="ui-btn" id="add_chat_btn">เพิ่มสมาชิก</button>
+							</div>
+							
+							<div class="content-topbutton">
+								<button class="ui-btn">ลบข้อความ</button>
+							</div>
+						</div>
+						<div class="clear-block"></div>
+						
+						<div class="content-listview">
+							<ul data-role="listview" >
+							  <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+								  <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+								  <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+							     <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+								  <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+								  <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+								  <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+								  <li>
+								<a href="#message_chat">
+										<img src="../img/logo.jpg"   />
+										<h2 >19955 Anurat</h2>
+										<p>รบกวนสอบถามรายละเอียดข้อมูลเมมเบอร์ 001</p>
+										<h3 class="ui-li-aside">วันพฤหัสบดี<br /><span>16.23</span></h3>
+								</a>
+							  </li>
+							</ul>
+						</div>
+				</div>
+				
+				<script type="text/javascript">
+				
+			$(document).one( 'pagecreate',"#page_list_user",function(event){	
+						jqmReady.resolve();
+				});
+					$('#add_chat_btn').click(function() {
+						setTimeout(function(){ 
+							$.mobile.navigate("#message_search", { transition: "fade" });
+						},50);
+					});
+				</script>
+		</div>
+		
+		<div data-role="page"   id="message_search" class="ui-responsive-panel">
+			<div data-role="content"  class="scrollable ui-content scroll-list">
+					
+						<div class="content-topbutton">
+							<button class="ui-btn">ส่งข้อความ</button>
+						</div>
+
+						<div data-role="fieldcontain">
+							
+							<input type="search" name="search-2" id="search-2" value="" />
+						</div>
+					
+							<div class="content-table">
+							 <table data-role="table" class="ui-responsive">
+							  <thead>
+								<tr>
+								  <th>ID.</th>
+								  <th>ชื่อสมาชิก</th>
+								  <th>เมมเบอร์</th>
+								</tr>
+							  </thead>
+							  <tbody>
+								<tr>
+								  <td>12345</td>
+								  <td class="td-name">Alfreds Futterkiste</td>
+								  <td>VIP 01</td>
+								</tr>
+								<tr>
+								  <td>12346</td>
+								  <td class="td-name">Antonio Moreno Taquería</td>
+								  <td>VIP 02</td>
+								</tr>
+								<tr>
+								  <td>12347</td>
+								  <td class="td-name">Around the Horn</td>
+								  <td>VIP 03</td>
+								</tr>
+								<tr>
+								  <td>12348</td>
+								  <td class="td-name">Berglunds snabbköp</td>
+								  <td>VIP 04</td>
+								</tr>
+							  </tbody>
+							</table>
+						</div>
+			
+			</div>
+		</div>
+		
+		<div data-role="page"   id="message_chat" class="ui-responsive-panel">
+			<div data-role="content"   class="scrollable ui-content scroll-message chat-content">
+						<div class="content-message">
+							<ul  >
+								<li class="chatblock-other">
+									<div class="message message-avatar">
+										<img src="../img/avatar.png" />
+									</div>
+									<div class="message message-text">
+										<h2>13874 Lanlata</h2>
+										<div class="message">
+											<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+										</div>
+										<div class="message">
+											<span>21/03/2014</span>
+											<span>8.24 pm</span>
+										</div>
+									</div>
+								</li>
+								<li class="chatblock-other">
+									<div class="message message-avatar">
+										<img src="../img/avatar.png" />
+									</div>
+									<div class="message message-text">
+										<h2>13874 Lanlata</h2>
+										<div class="message">
+											<p>Lorem Ipsum is simply dummy text of the printing.</p>
+										</div>
+										<div class="message">
+											<span>21/03/2014</span>
+											<span>9.30 pm</span>
+										</div>
+									</div>
+								</li>
+								<li class="chatblock-myself">
+									<div class="message message-text">
+										<h2>13855 Anurat</h2>
+										<div class="message">
+											<span>21/03/2014</span>
+											<span>9.30 pm</span>
+										</div>
+										<div class="message">
+											<p>Lorem Ipsum is simply dummy text of the printing.</p>
+										</div>
+									</div>
+									<div class="message message-avatar">
+										<img src="../img/avatar.png" />
+									</div>
+								</li>
+								<li class="chatblock-myself">
+									<div class="message message-text">
+										<h2>13855 Anurat</h2>
+										<div class="message">
+											<span>21/03/2014</span>
+											<span>9.30 pm</span>
+										</div>
+										<div class="message">
+											<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+										</div>
+									</div>
+									<div class="message message-avatar">
+										<img src="../img/avatar.png" />
+									</div>
+								</li>
+								<li class="chatblock-myself">
+									<div class="message message-text">
+										<h2>13855 Anurat</h2>
+										<div class="message">
+											<span>21/03/2014</span>
+											<span>9.30 pm</span>
+										</div>
+										<div class="message">
+											<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+										</div>
+									</div>
+									<div class="message message-avatar">
+										<img src="../img/avatar.png" />
+									</div>
+								</li>
+								<li class="chatblock-myself">
+									<div class="message message-text">
+										<h2>13855 Anurat</h2>
+										<div class="message">
+											<span>21/03/2014</span>
+											<span>9.30 pm</span>
+										</div>
+										<div class="message">
+											<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+										</div>
+									</div>
+									<div class="message message-avatar">
+										<img src="../img/avatar.png" />
+									</div>
+								</li>
+								<li class="chatblock-myself">
+									<div class="message message-text">
+										<h2>13855 Anurat</h2>
+										<div class="message">
+											<span>21/03/2014</span>
+											<span>9.30 pm</span>
+										</div>
+										<div class="message">
+											<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. </p>
+										</div>
+									</div>
+									<div class="message message-avatar">
+										<img src="../img/avatar.png" />
+									</div>
+								</li>
+							
+							</ul>
+						</div>
+			</div>
+			
+			<div data-role="footer" class="footer-panel ui-grid-b my-breakpoint">
+				<div class="ui-block-a"><button class="ui-btn">ส่งรูปภาพ</button></div>
+				<div class="ui-block-b"><input type="text" name="name" id="text-message" value=""  /></div>
+				<div class="ui-block-c"><button class="ui-btn" id="send">ส่งข้อความ</button></div>
+			</div><!-- /grid-b -->
+			
+			
+			<script type="text/javascript">
+				$('#send').click(function() {
+				
+					if($("#text-message").val()!="")
+					{
+						var dNow = new Date();
+						var date = (dNow.getMonth()+1) + '/' + dNow.getDate() + '/' + dNow.getFullYear();
+						var time = getTime(dNow);
+
+						var message = '<li class="chatblock-myself">';
+						message += '<div class="message message-text add-margin-4" >';			
+						message += '<h2>13855 Anurat</h2>';
+						message += '<div class="message add-margin-4">';
+						message += '<span>'+date+'</span>';
+						message += '<span>'+time+'</span>';
+						message += '</div>';
+						message += '<div class="message add-margin-3">';
+						message += '<p>'+$("#text-message").val()+'</p>';
+						message += '</div>';
+						message += '</div>';
+						message += '<div class="message message-avatar ">';
+						message += '<img src="../img/avatar.png" />';
+						message += '</div>';
+						message += '</li>';
+						$('.content-message>ul').append(message);		
+						$("#text-message").val("");
+						$('.chat-content').animate({
+							scrollTop: $('.chat-content').get(0).scrollHeight
+						}, 500);
+					}
+				});
+				
+				function getTime(dNow){
+					var Time = "";
+						if (dNow.getHours() > 12) {
+							Time = dNow.getHours() - 12 + ":" + dNow.getMinutes() + " pm";
+						}
+						else {
+							Time = dNow.getHours() + ":" + dNow.getMinutes() + " am";
+						}
+					return Time;
+				}
+
+			</script>
+		</div>
+		
+		</div>
+		<script type="text/javascript" src="../js/menubar.js"></script>
+    </body>
+</html>

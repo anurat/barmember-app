@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	   <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />
+        <title>MEMBER DEMO APP</title>
+		
+		<!-- JS -->
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="../../js/jquery.mobile-1.4.2.min.js"></script>
+		<script src="../../js/script.js"></script>
+		<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>
+		<!-- CSS -->
+		<link rel="stylesheet" href="../../css/jquery.mobile-1.4.2.css" />
+		<link rel="stylesheet" href="../../css/jquery.mobile-1.4.2.min.css" />
+		<link rel="stylesheet" href="../../css/styles.css" />
+		<link rel="stylesheet" href="../css/jquery-ui-1.10.3.custom.min.css"/>
+    </head>
+    <body>
+		<div id="container">
+		<div data-role="page" class="ui-responsive-panel">
+				<div data-role="content"  class="scrollable ui-content scroll-list">
+						<div class="content-topbutton">
+							<button class="ui-btn" id="add-btn">เพิ่มเมมเบอร์</button>
+						</div>
+						<div class="package-block" id ="FirstLine">
+
+					
+							
+						</div>
+						
+				</div>
+				
+				<div id="dialog-confirm" title="Delete Package?">
+				<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;">
+				</span>These items will be permanently deleted and cannot be recovered. Are you sure?</p>
+				</div>
+		</div>
+		</div>
+		<!--<script type="text/javascript" src="../../cordova.js"></script>
+		<script type="text/javascript" src="../../js/index.js"></script> -->
+		<script type="text/javascript" src="../../js/menubar.js"></script> 
+		<script type="text/javascript">
+		$(document).bind("mobileinit", function() {
+			$.support.cors = true;
+			$.mobile.allowCrossDomainPages = true;	
+			/*$("#package_delete").click(function() {
+			 $( "#dialog-confirm" ).css('visibility','visible');
+			});*/
+		});	
+		$(function() {
+			$("#dialog-confirm").hide();
+			
+		});	
+		$(document).on( 'pageinit',function(event){	
+					$.ajax({
+						type: "GET",
+						url: "http://192.168.1.111/memberws/restaurant2/restaurant_id_packages/11/1",
+						cache: false,
+						dataType: "json",
+						success: function(data){
+						$('#package-detail').empty();
+							if(data['code'] == 2){
+								
+				
+							}else{
+								var obj = JSON.parse(JSON.stringify(data));
+								drawTable(obj);	
+												
+							}
+						}
+					});
+					
+					function drawTable(data) {
+					var temp="";
+			
+						for (var i = 0; i < data.length; i++) {
+						
+							 temp +="</br>"+drawRow(data[i],i);
+						
+							
+						}
+					//document.getElementById("FirstLine").innerHTML = temp;
+					
+					}
+
+					function drawRow(rowData,i) {
+						
+					var FirstLine =	"<div class='package-header block-inline'><span id='package_name_"+i+"'>"+rowData.name+"</span></div>"
+								+"<div class='bubble block-inline'><div class='talktext'><a id='package_edit' href='#'>แก้ไข</a></div></div>"
+								+"<div class='bubble block-inline'><div class='talktext'><a id='package_delete' href='#' onClick='package_delete("+rowData.package_id+" ) ;' > ลบ </a> </div></div>";
+					var temp_table = "<div class='package-detail'><table data-role='table'  id='package-detail_"+i+"' class='ui-responsive package-detail'>"	
+							+"<thead><tr><td>PRICE "+rowData.price+"</td><td>VALID "+rowData.valid_month+" MONTH</td></tr></thead>";	
+					var count = 0;	
+					var temp_table_body	="<tbody>";
+						if(rowData.package_products.length != 0){
+							temp_table_body +="<tr>";
+						 for (var j=0;j<rowData.package_products.length; j++) {
+							
+							temp_table_body+="<td> "+rowData.package_products[j].name+" "+rowData.package_products[j].number+"</td>";
+							if(j == rowData.package_products.length-1){
+							temp_table_body+="</tr>";
+							break;
+							}else if(count == 2){
+							temp_table_body+="</tr><tr>";
+							count = 0;
+							}
+							count++;
+						 }
+						} 
+						if(rowData.package_options.length !=0){
+							count = 0;
+							temp_table_body +="<tr>";
+						  for (var j=0;j<rowData.package_options.length; j++) {
+							temp_table_body+="<td> "+rowData.package_options[j].name+"</td>";
+							if(j == rowData.package_options.length-1){
+							temp_table_body+="</tr>";
+							break;
+							}else if(count == 2){
+							temp_table_body+="</tr><tr>";
+							count = 0;
+							}
+							count++;
+						  }
+						} 
+						temp_table=	temp_table+temp_table_body+"</tbody></table></div></br>";
+						
+						 FirstLine	=FirstLine+temp_table;	
+				
+		
+						$("#FirstLine").append( FirstLine);
+						$("#package-detail").table().table( "refresh" ,true).trigger( "create" );
+						return FirstLine;
+					}
+		});
+		
+		function package_edit(){
+		
+		}
+		
+		function package_delete(x){
+			 $( "#dialog-confirm" ).css('visibility','visible');
+		 $( "#dialog-confirm" ).dialog({
+				resizable: false,
+				height:140,
+				modal: true,
+				buttons: {
+					"Delete": function() {
+						$( this ).dialog( "close" );
+					},
+					Cancel: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+		 });
+	
+		}
+		
+        </script>
+		
+    </body>
+</html>

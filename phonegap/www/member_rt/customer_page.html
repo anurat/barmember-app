@@ -1,0 +1,1626 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="target-densitydpi=medium-dpi, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />
+	   	<meta http-equiv=Content-Type content=text/html;charset=iso-8859-1 />
+		
+        <title>customer_page</title>
+		
+				
+		<!-- JS -->
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script src="../js/jquery.mobile-1.4.3.min.js"></script>
+		<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="../js/jquery.validate.min.js"></script>
+		<script src="../js/footable.js"></script>	
+		<script src="../js/footable.sort.js" ></script>
+		<script src="../js/jquery.mobile.paramsHandler-1.4.2.js"></script>
+		<script type="text/javascript" src="../js/passing.js"></script>
+		<script type="text/javascript" src="../cordova.js"></script>
+		<script src="../js/script.js"></script>
+		
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<link rel="stylesheet" href="../css/jquery.mobile-1.4.3.css" />
+		<link rel="stylesheet" href="../css/styles.css" />
+		<link rel="stylesheet" href="../css/jquery-ui-1.10.3.custom.min.css"/>
+		<link href="../css/footable.core.min.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript">
+	var jqmReady = $.Deferred();
+	var pgReady = $.Deferred();
+
+	// jqm ready
+	$(document).bind("pagecreate", jqmReady.resolve);
+
+	// phonegap ready
+	document.addEventListener("deviceready", pgReady.resolve, false);
+
+	// all ready :)
+	$.when(jqmReady, pgReady).then(function () {
+         $(document).trigger("pagebeforeshow"); 
+    });
+
+
+			
+				$(document).on("pagebeforehide","#page_list_user",function(){ // When leaving page_list_user
+					//alert("page package_list is about to be hidden");
+					$('#CustomerTable tbody').empty();
+				});
+
+					
+				// Global Store object
+				var storeObject = {
+					cus_id : '',
+				}
+				
+				$(document).on("pagebeforeshow","#page_list_user",function(){ // When entering page_list_user
+						
+						//#1 get list of member  to selector
+						$("select[name='select-choice-4'] option:not(:first)").remove().end();
+				
+						$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/restaurant2/restaurant/11/1/packages",
+							cache: false,
+							dataType: "json",
+							success: function(data){
+								if(data['code'] == 2){
+								// Error !! , do something
+				
+								}else{
+								var obj = JSON.parse(JSON.stringify(data));
+									
+									$.each(obj, function(i, temp_obj){
+										$('#select-choice-1').append('<option id="'+temp_obj['name']+'" value="'+temp_obj['package_id']+'">'+temp_obj['name']+'</option>');
+									});
+									
+								}
+							}
+						}); // end of #1
+
+						//#2 get list of user to table
+						$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/restaurant2/customers/11/1",
+							cache: false,
+							dataType: "json",
+							success: function(data){
+						
+								if(data['code'] == 2){
+				
+				
+								}else{
+								var obj = JSON.parse(JSON.stringify(data));
+								drawTable(obj);		
+								//$.mobile.loading("hide");								
+								}
+							}
+						});//end of #2
+						
+				}); // end of before show page_list_user
+				
+				$(document).on( 'pagecreate',"#page_list_user",function(event){	// creating event of page_list_user
+						//#3 create event for sselector
+					
+						$('#select-choice-1').on('change', function() {
+							$.mobile.loading( "show", {
+								text: "Loading...",
+								textVisible: true,
+								textonly: false,
+								theme: "a",
+								html: ""
+							})
+							var temp_value = $( '#select-choice-1' ).val();
+							//alert(temp_value);
+							if(temp_value == "standard"){
+								$.ajax({
+									type: "GET",
+									url: "http://"+Global_url+"/memberws/restaurant2/customers/11/1",
+									cache: false,
+									dataType: "json",
+									success: function(data){
+										$('#CustomerTable tbody').empty();
+										if(data['code'] == 2){
+				
+				
+										}else{
+											var obj = JSON.parse(JSON.stringify(data));
+											drawTable(obj);		
+											$.mobile.loading( "hide");
+										}
+									}
+								});
+							}else{
+								$.ajax({
+									type: "GET",
+									url: "http://"+Global_url+"/memberws/restaurant2/filter_member/11/1/"+temp_value,
+									cache: false,
+									dataType: "json",
+									success: function(data){
+										$('#CustomerTable tbody').empty();
+										if(data['code'] == 2){
+						
+					
+										}else{
+											var obj = JSON.parse(JSON.stringify(data));
+											drawTable_select_search(obj);
+											$.mobile.loading( "hide");
+										}	
+									}
+								});	
+							}
+						}); // end of #3
+					
+						$('.footable').footable();
+						//#4 search key
+						$('#searchData').keyup(function() {
+							$.mobile.loading( 'show');
+							var searchVal = $(this).val();
+							if(searchVal !== '') {
+								$.ajax({
+								type: "GET",
+								url: "http://"+Global_url+"/memberws/restaurant2/search_customers/11/1/"+searchVal,
+								cache: false,
+								dataType: "json",
+								success: function(data){
+									$('#CustomerTable tbody').empty();
+									if(data['code'] == 2){
+						
+					
+									}else{
+										
+										var obj = JSON.parse(JSON.stringify(data));
+										drawTable_search(obj);
+										$.mobile.loading( 'hide');
+									}	
+								}
+								});
+			    
+							} else {
+								$.ajax({
+									type: "GET",
+									url: "http://"+Global_url+"/memberws/restaurant2/customers/11/1",
+									cache: false,
+									dataType: "json",
+									success: function(data){
+										$('#CustomerTable tbody').empty();
+										if(data['code'] == 2){
+				
+				
+										}else{
+										var obj = JSON.parse(JSON.stringify(data));
+										drawTable(obj);				
+										}
+									}
+								});
+							}
+						}); //end of #4
+				
+					
+					$('#btn_add_user').click(function() {
+						setTimeout(function(){ 
+		
+						$.mobile.navigate("#page_add_user", { transition: "fade" });
+							//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+							//$.mobile.defaultPageTransition = 'fade'
+						},50);	
+					});
+					$('.ui-input-clear').click(function() {
+							$.mobile.loading( "show", {
+								text: "Loading...",
+								textVisible: true,
+								textonly: false,
+								theme: "a",
+								html: ""
+							});
+							$.ajax({
+									type: "GET",
+									url: "http://"+Global_url+"/memberws/restaurant2/customers/11/1",
+									cache: false,
+									dataType: "json",
+									success: function(data){
+										$('#CustomerTable tbody').empty();
+										if(data['code'] == 2){
+				
+				
+										}else{
+										$.mobile.loading( 'hide');
+										var obj = JSON.parse(JSON.stringify(data));
+										drawTable(obj);				
+										}
+								}
+								});
+				
+					});
+				});// end of creating page_list_user	
+					function drawTable_select_search(data) {
+						//$("#CustomerTable").append("<tbody>");
+						for (var i = 0; i < data.length; i++) {
+							drawRow_select_search(data[i]);
+						}
+						//$("#CustomerTable").append("</tbody>");
+					}
+
+					function drawRow_select_search(rowData) {			
+						var row = "<tr id='select_search_row-"+ rowData.customer_id+"' >";
+						row += "<td>" + rowData.user_id + "</td>";
+						row += "<td>" + rowData.customer_name + "</td>";
+						if(rowData.packages == null){
+						rowData.packages = "-";
+						}
+						row += "<td>" + rowData.packages + "</td>";
+						row += "<td>" + rowData.customer_phone + "</td>";
+						
+						$("#CustomerBody").append(row);
+						
+						$('#select_search_row-'+ rowData.customer_id).click(function(){	
+					
+								storeObject.cus_id = rowData.customer_id;
+								setTimeout(function(){ 
+									$.mobile.navigate("#page_customer_package", { transition: "fade" 	});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+										//$.mobile.defaultPageTransition = 'fade'
+						
+								},50);
+						});
+						
+						
+					}
+					
+					
+					
+					
+					function drawTable_search(data) {
+						//$("#CustomerTable").append("<tbody>");
+						for (var i = 0; i < data.length; i++) {
+							drawRow_search(data[i]);
+						}
+						//$("#CustomerTable").append("</tbody>");
+					}
+
+					function drawRow_search(rowData) {			
+						var row = "<tr id='search_row-"+ rowData.customer_id+"' >";
+						row += "<td>" + rowData.user_id + "</td>";
+						row += "<td>" + rowData.customer_name + "</td>";
+						if(rowData.packages == null){
+						rowData.packages = "-";
+						}
+						row += "<td>" + rowData.packages + "</td>";
+						row += "<td>" + rowData.customer_phone + "</td>";
+						
+						$("#CustomerBody").append(row);
+						
+						$('#search_row-'+ rowData.customer_id).click(function(){	
+								storeObject.cus_id = rowData.customer_id;
+								setTimeout(function(){ 
+									$.mobile.navigate("#page_customer_package", { transition: "fade" 	});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+										//$.mobile.defaultPageTransition = 'fade'
+											
+								},50);
+						});
+						
+						
+					}
+		
+					function drawTable(data) {
+						//$("#CustomerTable").append("<tbody>");
+						
+						for (var i = 0; i < data.length; i++) {
+							//alert("data.length"+data[i].customer_name);
+							drawRow(data[i]);
+						}
+						//$("#CustomerTable").append("</tbody>");
+					}
+
+					function drawRow(rowData) {
+						var temp_string = '';
+					/*
+						var row = $("<tr id='row-"+ rowData.user_id+"' ><tr />");
+						////this will append tr element to table... keep its reference for a while since we will add cels into it
+						row.append("<td>" + rowData.user_id + "</td>");
+						row.append("<td class='td-name'>" + rowData.customer_name + "</td>");
+
+						if( 0 < rowData.packages.length ){
+							for(var j = 0 ; j < rowData.packages.length ; j++){
+								temp_string +=rowData.packages[j].package_name+" ";
+							}
+						}else {
+							temp_string = "-";	
+						}
+						row.append("<td>" + temp_string + "</td>");
+						row.append("<td>" + rowData.customer_phone + "</td>");
+						//$("#CustomerBody").append(row); 
+						*/
+						//console.log(rowData.user_id);
+						
+						var row = "<tr id='row-"+ rowData.customer_id+"' >";
+						row += "<td>" + rowData.user_id + "</td>";
+						row += "<td>" + rowData.customer_name + "</td>";
+						if( 0 < rowData.packages.length ){
+							for(var j = 0 ; j < rowData.packages.length ; j++){
+								//alert(rowData.packages.length);
+								temp_string +=rowData.packages[j].package_name+" ";
+							}
+						}else {
+							temp_string = "-";	
+						}
+						row += "<td>" + temp_string + "</td>";
+						row += "<td>" + rowData.customer_phone + "</td>";
+						
+						$("#CustomerBody").append(row);
+						
+						$('#row-'+ rowData.customer_id).click(function(){	
+								storeObject.cus_id = rowData.customer_id;
+								setTimeout(function(){ 
+									$.mobile.navigate("#page_customer_package", { transition: "fade" 	});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+										//$.mobile.defaultPageTransition = 'fade'
+						
+								},50);
+						});
+					}
+					
+					//*******************************************End of page list***************************************************//
+					// PAGE USER DETAIL
+					
+					$(document).on("pagebeforehide","#page_customer_package",function(){ // When entering page add
+						$('.customer_package').empty();
+						$("#txt_brithday").datepicker("hide");
+					});
+				
+					var local_cusotmer_id ="";					
+					$(document).on('pagebeforeshow', '#page_customer_package', function(){     
+					//	alert('My name is ' + storeObject.cus_id);
+						$("#dialog_delete").hide();
+						
+					
+						$("#drink_deposite").accordion({
+							collapsible: true
+						});
+						$("#add_more_package_customer").accordion({
+							collapsible: true
+						});
+						
+						
+						$('#add_more_package_customer_list').empty();
+						
+							$.ajax({
+								type: "GET",
+								url: "http://"+Global_url+"/memberws/restaurant2/restaurant/11/1/packages",
+								cache: false,
+								dataType: "json",
+								success: function(data){
+									if(data['code'] == 2){
+									// Error !! , do something
+				
+									}else{
+										var obj = JSON.parse(JSON.stringify(data));
+										var temp = "" ;	
+										temp = '<fieldset data-role="controlgroup">';
+										//$('#mycheckbox').append('<fieldset data-role="controlgroup">');
+										$.each(obj, function(i, temp_obj){
+											//alert(temp_obj['name']);
+											//$('#mycheckbox').append('<input type="checkbox" data-iconpos="right"  name="'+temp_obj['name']+'" id="'+temp_obj['name']+'" value="'+temp_obj['package_id']+'"><label for="'+temp_obj['name']+'">'+temp_obj['name']+'</label>');
+											temp +='<p><input type="checkbox" data-iconpos="right"  name="more_member" id="'+temp_obj['name']+'" value="'+temp_obj['package_id']+'"/>'+temp_obj['name'];
+
+										});
+										temp +='</fieldset>';
+										//$('#sselect-package').append('<option id="deposite" value="deposite">ฝากเหล้า</option>');
+										$('#add_more_package_customer_list').append(temp);
+									}
+								}
+							});
+				
+						
+							var id = storeObject.cus_id;
+							local_cusotmer_id =id;
+							sessionStorage.clear();
+							sessionStorage.setItem("session_customer", id);
+							$.ajax({
+								type: "GET",
+								url: "http://"+Global_url+"/memberws/customers2/customer/11/"+ id,
+								cache: false,
+								dataType: "json",
+								success: function(data){
+									if(data['code'] == 2){
+								
+									//Error , do something
+									}else{
+										var obj = JSON.parse(JSON.stringify(data));
+										console.log(obj);
+									
+										if(obj.user_img_path != 'null'){
+											var imgurl = "http://"+Global_url+"/memberws"+obj.user_img_path;
+											$("#customer_package_largeImage").load(imgurl, function(response, status, xhr) {
+												if (status == "error") {
+													alert("Image Not Found");
+													$(this).attr('src', '../img/logo.jpg');
+												}
+												else{
+													//alert("Image  Found");
+													$(this).attr('src', imgurl);
+												}
+											});
+									}
+									// $("#customer_package_largeImage").attr("src","http://"+Global_url+"/memberws"+obj.user_img_path) ;
+								
+									var myDate = new Date(1000* obj.birthday);
+									console.log(myDate.toString());
+									console.log(myDate.toLocaleDateString());
+									console.log(myDate.toUTCString());
+									$("#txt_user_id").val(obj.user_id);
+									$("#txt_username").val(obj.name);
+									$("#txt_phone_number").val(obj.phone);
+									$("#txt_brithday").val(myDate.toLocaleDateString());
+									$("#txt_email").val(obj.email);
+									$("#txt_type").val(obj.note);
+									
+								}
+							}
+						});
+						var pack = $('.customer_package');
+						var restaurant_id =  1;
+						
+						$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/customers2/package/11/"+restaurant_id+"/"+id,
+							cache: false,
+							dataType: "json",
+							success: function(data){
+									if(data['code'] == 2){
+					
+									//Error , do something
+									}else{
+											var objArray = JSON.parse(JSON.stringify(data));
+											console.log(objArray);
+											var html ="";
+											var html1 ="";
+											$.each( objArray, function( key, value) {
+											var html = "<div id='accordion_"+value.package_id+"'>"
+													html1 = '<h1>'+value.name+'</h1>';
+													html1 += '<div class="mem-wrap" id="package-'+value.customer_package_id+'">';
+													html1 +='<div class="mem-header" id="header-'+value.package_id+'">';
+													html1 +='<div class="ui-grid-a my-breakpoint">';
+													html1 +='<div class="ui-block-a mem-panel">';
+													html1 +='<label>'+value.name+'</label>';
+													html1 +='</div>';
+													html1 +='<div class="ui-block-b">';
+													html1 +='<div class="bubble block-inline">';
+													html1 +='<div class="talktext">';
+													html1 +='<a href="#" id="delete-bnt-'+value.package_id+'" class="delete-bnt"  onClick="delete_package('+value.customer_package_id+','+value.package_id+');" > ลบ</a>';
+													html1 +='</div>';
+													html1 +='</div>';
+													html1 +='</div>';
+													html1 +='</div>';
+													html1 +='</div>';
+													html1 +='<div class="mem-outdate">';
+													html1 +='<div class="ui-grid-a my-breakpoint">';
+													html1 +='<div class="ui-block-a mem-panel">';
+													html1 +='<label>หมดอายุ</label>';
+													html1 +='</div>';
+													html1 +='<div class="ui-block-b mem-panel">';
+													if(value.valid_month == 0){
+
+													html1 +='<label>'+value.start_date+" - "+value.end_date+'</label>';
+													}else{
+													html1 +='<label>'+value.valid_month+' month</label>';
+													}
+													html1 +='</div>';
+													html1 +='</div>';
+													html1 +='</div>';
+													html1 +='<div>';
+													
+													$.each( value.product_options, function( i, option ) {
+														html1 +='<div class="mem-panel">';
+														html1 +='<label>'+ option.name+'</label>';
+														html1 +='</div>';
+													});
+													
+													html1 +='</div>';
+													html1 +='<div class="mem-panel mem-note-panel">';
+													html1 +='<label>NOTE:</label>';
+													html1 +="<p>Lorem Ipsum is simply dummy text</p>";
+													html1 +='</div>';
+													html1 +='</div>';
+													pack.append(html+html1);
+														$( "#accordion_"+value.package_id ).accordion({
+														collapsible: true
+														});
+													$.each( value.product_packages, function( i, prod ) {
+														var product = "";
+																			product +='<div class="mem-item">';
+																			product +='<div class="">';
+																			product +='<div class="mem-panel mem-icon mem-icon-desc">';
+																			product +='<label data-inline="true" class="alignleft">'+prod.name+'</label>';
+																			var remaining = 0;
+																			console.log("pack vus: "+prod.remaining_no);
+																			product +='<label data-inline="true" class="alignright "><span id="txt-remain-'+prod.customer_product_id+'">'+prod.remaining_no+'</span>/'+prod.number+'</label>';
+										
+																			product +='</div>';
+																				  
+																			product +='<div class="mem-icon">';
+																			var num = parseInt(prod.remaining_no);
+																			var group = parseInt(prod.product_group_id);
+																			
+																			console.log(num+' '+group);
+																			
+																				for( j = 1; j<=num; j++)
+																				{	
+																					//alert(j);
+																					//item.customer_product_id
+																					product += '<img src="../img/bottle-icon.png" class="bottle-icon icon-'+prod.customer_product_id+'" onClick="package_delete('+prod.customer_product_id+') ;" />';
+																					//html +='<a href="index.html" data-role="button" data-inline="true" data-icon="star" class="btn_icon" data-iconpos="notext"></a>';
+																					// reduct stockk
+																				
+																				
+																				}
+																			
+																			product +='</div>';
+																			product +='</div>';
+																			product +='</div>';		
+																			
+															$(product).insertAfter("#header-"+value.package_id);
+														
+													});
+											
+											});		
+										
+											
+									}
+							}
+						});	
+						
+						
+							$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/restaurant2/get_deposit_drink_by_id/11/"+restaurant_id+"/"+id,
+							cache: false,
+							dataType: "json",
+							success: function(data){
+								if(data['code'] == 2){
+
+								}else{
+									$("#table_list_deposit").empty();
+									var obj = JSON.parse(JSON.stringify(data));
+										for(var z =0; z< obj.length ; z++){
+										var row = "<tr>";
+										row += "<td>"+obj[z].drink_name+"</td>" ;
+										if(obj[z].expire_date != 0){
+											row  +=	'<td>'+obj[z].expire_date+'</td>';
+										}
+										else{
+										
+											var temp =	parseInt(obj[z].valid_deposite);
+											if(temp >1){
+												row  +=	'<td>'+obj[z].valid_deposite+' Months</td>';
+											}else{
+												row  +=	'<td>'+obj[z].valid_deposite+' Month</td>';
+											}
+										}
+										row +="</tr>";
+										
+										
+										
+										$("#table_list_deposit").append(row);
+										
+										}
+								}
+							 }
+							});	
+						
+						
+					
+		
+					});
+				$(document).on('pagecreate', '#page_customer_package', function(){     
+				
+				var action = "DELETE_METHOD";		
+				$("#delete_customer").click(function() {
+							
+					$( "#dialog_delete" ).dialog({
+							resizable: false,
+							height:200,
+							modal: true,
+							buttons: {
+								"Delete": function() {
+									$( this ).dialog( "close" );
+										
+										$.ajax({
+												type: "POST",
+												url: "http://"+Global_url+"/memberws/customers2/customer/11",
+												data: "action="+action+ "&customer_id="+local_cusotmer_id +"&restaurant_id="+Global_restuarant ,
+												cache: false,
+												dataType: "json",
+												success: function(data){
+														console.log("data['status'] : "+data['status'] );
+														if(data['status'] == "FAILURE"){
+															alert("Somethig Error , please contact Connectiv asap");
+														}else{
+															
+															setTimeout(function(){ 
+															$.mobile.navigate("#page_list_user", { transition: "fade" 	});
+															},50);
+														}
+												}
+										});
+								},
+								Cancel: function() {
+									$( this ).dialog( "close" );
+								}
+							}
+					 }).dialog("open");
+							
+							
+				});
+				
+					$("#update_btn_package").click(function() {
+							$.mobile.loading( "show", {
+								text: "Loading...",
+								textVisible: true,
+								textonly: false,
+								theme: "a",
+								html: ""
+							});
+							
+							var selectedLanguage = new Array();
+								$('input[name="more_member"]:checked').each(function() {
+									selectedLanguage.push(this.value);
+								});
+							//alert(selectedLanguage);	
+							var username = $("#txt_username").val();
+							var email = $("#txt_email").val();
+							var brithday = $("#txt_brithday").val();
+							var phone = $("#txt_phone_number").val();
+							//var user_id = $("#user_id").val();
+							var customer_type = selectedLanguage;
+
+							var password = "123";
+							var restaurant_id = 1;
+							var note = $("#txt_note").val();
+							var action = "UPDATE_METHOD";
+							$.ajax({
+								type: 'POST',
+								url: 'http://'+Global_url+'/memberws/customers2/customer/11/',
+								data: "action="+action+ "&name=" + username + "&email=" +email 
+								+ "&phone=" +  phone+"&brithday="+ brithday + "&restaurant_id=" +  restaurant_id+"&password="+ password
+								/*+ "&user_id="+user_id*/ + "&customer_type=" + customer_type+"&note="+note+"&customer_id="+local_cusotmer_id,
+								cache: false,
+								dataType:  "json",
+								success: function(data){
+							
+									if(data['status'] == "SUCCESS"){
+										alert(data['status']);
+								
+										setTimeout(function(){ 
+															$.mobile.navigate("#page_list_user", { transition: "fade" 	});
+										},50);
+											$.mobile.loading( "hide");
+									}else{
+										alert("Error " +data['status']);
+											$.mobile.loading( "hide");
+									}
+								},
+								error: function(msg) {
+									$.mobile.loading( "hide");
+									console.log('failure' + msg );
+								}
+							});
+				
+				
+					});
+					
+					$( "#txt_brithday" ).datepicker({	
+									dateFormat: "dd/mm/yy",
+									changeMonth: true,
+									changeYear: true,
+									yearRange: '1950:2100'
+					});
+				
+			});	
+				function delete_package(x,y){
+					$("#dialog_delete").addClass("ui-front");
+					$("#dialog_delete").attr( "title", "Delete this package?" );
+					console.log("delete "+x);
+					var action = "DELETE_METHOD";
+						 $( "#dialog_delete" ).dialog({
+							resizable: false,
+							height:200,
+							modal: true,
+							buttons: {
+								"Delete": function() {
+									$( this ).dialog( "close" );
+										$.mobile.loading( "show", {
+											text: "Loading...",
+											textVisible: true,
+											textonly: false,
+											theme: "a",
+											html: ""
+										});
+										$.ajax({
+												type: "POST",
+												url: "http://"+Global_url+"/memberws/customers2/package/11",
+												data: "action="+action+ "&customer_package_id=" + x ,
+												cache: false,
+												dataType: "json",
+												success: function(data){
+														console.log("data['status'] : "+data['status'] );
+														if(data['status'] == "FAILURE"){
+															alert("Somethig Error , please contact Connectiv asap");
+															$.mobile.loading( "hide");
+														}else{
+															console.log("Remove : #package-"+x);
+															$('#accordion_'+y).remove();
+															$('#package-'+x).remove();
+															$.mobile.loading( "hide");
+															//window.location.reload()
+														}
+												}
+										});
+								},
+								Cancel: function() {
+									$( this ).dialog( "close" );
+								}
+							}
+					 }).dialog("open");
+					
+				}
+				function package_delete(x){
+					$("#dialog_delete").addClass("ui-front");
+					$("#dialog_delete").attr( "title", "Already served this bottle?" );
+					console.log("dd");
+					var remains = parseInt($("#txt-remain-"+x).text());
+					//var remaining_no = 0;
+	
+					var remaining_no = remains-1;
+					
+					console.log("Remains: "+remains);
+					console.log("Remaining no: "+remaining_no);
+					
+					var action = "UPDATE_REMAINING_METHOD";
+					 $( "#dialog_delete" ).dialog({
+							resizable: false,
+							height:200,
+							modal: true,
+							buttons: {
+								"Delete": function() {
+									$( this ).dialog( "close" );
+									$.mobile.loading( "show", {
+										text: "Loading...",
+										textVisible: true,
+										textonly: false,
+										theme: "a",
+										html: ""
+									});
+										$.ajax({
+											type: "POST",
+											url: "http://"+Global_url+"/memberws/customers2/package/11",
+											data: "action="+action+ "&customer_product_id=" + x +"&remaining_no=" + remaining_no ,
+											cache: false,
+											dataType: "json",
+											success: function(data){
+												if(data['code'] == "FAILURE"){
+												alert("Somethig Error , please contact Connectiv asap");
+												$.mobile.loading( "hide");
+												}else{
+													//alert(data['status']);
+													//window.location.reload();
+													$(".icon-"+x+":last-child").remove();
+													$("#txt-remain-"+x).text(remaining_no);
+													$.mobile.loading( "hide");
+												}
+											}
+										});
+								},
+								Cancel: function() {
+									$( this ).dialog( "close" );
+								}
+							}
+					 }).dialog("open");
+				}
+				
+					//*******************************************End of Page  edit Customer**************************************//
+					// PAGE ADD USER 
+					var User_imageURI="";
+					$(document).on("pagebeforehide","#page_add_user",function(){ // When leaving page add
+						$( "#brithday" ).datepicker("hide");
+					});	
+					
+					$(document).on("pagebeforeshow","#page_add_user",function(){ // When entering page add
+					// get list of member  to check box
+					//	$("select[name='select-package'] option:not(:first)").remove().end();
+						$('#mycheckbox').empty();
+						$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/restaurant2/restaurant/11/1/packages",
+							cache: false,
+							dataType: "json",
+							success: function(data){
+								if(data['code'] == 2){
+				
+				
+								}else{
+									var obj = JSON.parse(JSON.stringify(data));
+									var temp = "" ;	
+										temp = '<fieldset data-role="controlgroup">';
+										//$('#mycheckbox').append('<fieldset data-role="controlgroup">');
+										$.each(obj, function(i, temp_obj){
+										//alert(temp_obj['name']);
+										//$('#mycheckbox').append('<input type="checkbox" data-iconpos="right"  name="'+temp_obj['name']+'" id="'+temp_obj['name']+'" value="'+temp_obj['package_id']+'"><label for="'+temp_obj['name']+'">'+temp_obj['name']+'</label>');
+										temp +='<p><input type="checkbox" data-iconpos="right"  name="member" id="'+temp_obj['name']+'" value="'+temp_obj['package_id']+'"/>'+temp_obj['name'];
+			
+									
+										});
+										temp +='<p><input type="checkbox" data-iconpos="right"  name="member" id="deposite" value="deposite"/>'+"ฝากเหล้า";	
+										temp +='</fieldset>';
+									//$('#sselect-package').append('<option id="deposite" value="deposite">ฝากเหล้า</option>');
+									$('#mycheckbox').append(temp);
+								}
+							}
+						});
+					});
+					$( document ).one( "pagecreate", "#page_add_user", function ( event ) {
+						$( "#dialog-confirm-add-deposite" ).hide();
+						$('#add_form').validate({
+							onfocusout: false,
+							onkeyup: true,
+							onclick: true,
+							focusInvalid: true,
+							rules: {
+								email: {
+									required: true,
+									email: true
+								},
+							//	user_id: "required",
+								username: "required",
+								brithday: "required",
+								phone_number: "required"
+								},
+							messages: {
+									//replace with your error message
+									username: "Username is required" ,
+									brithday: "Brithday is required" ,
+									phone_number: "Phone number is required" ,
+									email: { required: "Email is required" ,
+											email: "Please enter a valid email address" }
+								},
+							errorPlacement: function(error,element){ 
+									/*error.insertAfter(element); 
+									alert(error.html()); */
+									element.val(error.text());
+								},
+							showErrors: function(errorMap, errorList){ 
+									this.defaultShowErrors();
+								},
+							submitHandler: function(form) {
+							var val=$("input:checked").length
+							var Deposite_check_only = false;
+							var Deposite_check_not_only = false;
+							 /* if(val>0){//At least one checked
+									
+							
+									$('input[name="member"]:checked').each(function() {
+										
+										if(val==1 && this.value == "deposite"){
+										alert("Deposite Checked");
+										
+										Deposite_check_only =true;
+										return ;
+										}
+										else if(val>1 && this.value  == "deposite" ){
+										alert("Not only Deposite Checked");
+										
+										Deposite_check_not_only =true;
+										return ;
+										}
+										
+									});
+									
+								}*/
+								ajax_add_user();
+								/*$("#username").val("");
+								$("#email").val("");
+								$("#brithday").val("");
+								$("#phone_number").val("");
+								$("#user_id").val("");
+								$("#type").val("");*/
+							   }
+							
+						});
+						
+						$('#btn_back').click(function() {
+							setTimeout(function(){ 
+			
+							$.mobile.navigate("#page_list_user", { transition: "fade" });
+							//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+							//$.mobile.defaultPageTransition = 'fade'
+						},50);
+				
+						});
+								$( "#brithday" ).datepicker({	
+									dateFormat: "dd/mm/yy",
+									changeMonth: true,
+									changeYear: true,
+									yearRange: '1950:2100'
+								});
+						
+							 
+				});
+						/*
+								$('#bars-button').click(function() {
+									alert("panel2");
+									$.mobile.activePage.find('.header-menu:visible').panel("open");
+								});
+				*/
+					var status = "" ;
+					var reasons = "" ;
+					var customer_id ;
+					var Root_dir;
+					var pictureSource;   
+					var destinationType; 
+					document.addEventListener("deviceready",onDeviceReady,false);
+					/**For the android please be noted this 
+					http://stackoverflow.com/questions/20638932/unable-to-load-image-when-selected-from-the-gallery-on-android-4-4-kitkat-usin
+					so that why in onPhotoURISuccess so dirty lots lol
+					**/
+					function onDeviceReady() 
+					{
+						pictureSource=navigator.camera.PictureSourceType;
+						destinationType=navigator.camera.DestinationType;
+					}
+					function onPhotoURISuccess(imageURI) 
+					{	
+						//alert(imageURI);
+						//console.log(imageURI);
+						var largeImage = document.getElementById('largeImage');
+						largeImage.style.display = 'block';
+						User_imageURI = imageURI;
+							largeImage.src = imageURI;
+						if (imageURI.substring(0,21)=="content://com.android") {
+							photo_split=imageURI.split("%3A");
+							imageURI="content://media/external/images/media/"+photo_split[1];
+						}
+						Root_dir =imageURI;
+					}
+					function onPhotoDataSuccess(imageURI) 
+					{ 
+						//alert(imageURI);
+						var imgProfile = document.getElementById('largeImage');
+						imgProfile.src =  imageURI;
+						
+						if(sessionStorage.isprofileimage==1)
+						{
+							getLocation();
+						}
+						movePic(imageURI);
+					}
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+
+					function movePic(file)
+					{ 
+						window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError); 
+					} 
+
+					function resolveOnSuccess(entry)
+					{ 
+						var d = new Date();
+						var n = d.getTime();
+						var newFileName = n + "_Conectiv.jpg";
+						var myFolderApp = "MyAppFolder";
+						User_imageURI = newFileName;
+						window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) 
+						{      
+							
+							fileSys.root.getDirectory( myFolderApp,
+							{create:true, exclusive: false},
+							function(directory) 
+							{
+								
+								entry.moveTo(directory, newFileName,  successMove, resOnError);
+							},
+							resOnError);
+						},
+						resOnError);
+					}
+
+					function successMove(entry) 
+					{
+						Root_dir=  entry.toURL();
+						sessionStorage.setItem('imagepath', entry.fullPath);
+						console.log("Test name "+entry.name);
+						console.log("Test root name "+entry.root.name);
+						
+					}
+					function resOnError(error) 
+					{
+						alert("resOnError "+error.code);
+					}
+					function capturePhoto() 
+					{
+						navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+						destinationType: Camera.DestinationType.FILE_URI,
+						correctOrientation: true	});
+					}
+
+					function getPhoto(source) 
+					{
+						navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+						destinationType: destinationType.FILE_URI,
+						correctOrientation: true,
+						sourceType: source });
+					}
+
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+			
+					function upload_Photo(image_URI,id) {
+					  //  window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+					
+					//	alert("Ready to Root_dir :"+Root_dir);
+						
+						var imageURI = image_URI;
+						var customer_id = id;
+						var options = new FileUploadOptions();
+						options.fileKey="file";
+						//options.fileName= imageURI.substr(imageURI.lastIndexOf('/')+1);
+						options.mimeType="image/jpeg";
+				
+						//add on data
+						var params = new Object();
+						params.customer_id = customer_id;
+						options.params = params;
+
+						var ft = new FileTransfer();
+						var result =ft.upload(Root_dir, "http://"+Global_url+"/memberws/customers2/upload_photo/11/1", win, fail, options);
+						//alert("result "+result);
+					}
+					
+					function win(r) {
+						status = "true";
+						reasons ="Code = " + r.responseCode+"/n"+" Response = " + r.response+" Sent = " + r.bytesSent ;
+						alert("Code = " + r.responseCode+"/n"+" Response = " + r.response+" Sent = " + r.bytesSent);
+					}
+
+					function fail(error) {
+						status = "false";
+						reasons = "An error has occurred: Code = " + error.code+" upload error source " + error.source+" upload error target " + error.target;
+						alert("An error has occurred: Code = " + error.code+" upload error source " + error.source+" upload error target " + error.target);
+					}
+					function ajax_add_user(){
+								$.mobile.loading( "show", {
+										text: "Loading...",
+										textVisible: true,
+										textonly: false,
+										theme: "a",
+										html: ""
+								});
+							var selectedLanguage = new Array();
+								$('input[name="member"]:checked').each(function() {
+									selectedLanguage.push(this.value);
+								});
+							//alert(selectedLanguage);	
+							var username = $("#username").val();
+							var email = $("#email").val();
+							var brithday = $("#brithday").val();
+							var phone = $("#phone_number").val();
+							//var user_id = $("#user_id").val();
+							var customer_type = selectedLanguage;
+
+							var password = "123";
+							var restaurant_id = 1;
+							var note = " Testing CUSTOMER";
+							var action = "ADD_METHOD";
+							$.ajax({
+								type: 'POST',
+								url: 'http://'+Global_url+'/memberws/customers2/customer/11/',
+								data: "action="+action+ "&name=" + username + "&email=" +email 
+								+ "&phone=" +  phone+"&brithday="+ brithday + "&restaurant_id=" +  restaurant_id+"&password="+ password
+								/*+ "&user_id="+user_id*/ + "&customer_type=" + customer_type+"&note="+note  ,
+								cache: false,
+								dataType:  "json",
+								success: function(data){
+									if(data['status'] == "SUCCESS"){
+										alert(data['status']);
+
+										var n = data['id'].search("deposite");
+								
+										if(n == -1){
+										
+										var customer_id = data['id'];
+										if(User_imageURI != ""){
+										upload_Photo(User_imageURI,customer_id);
+										$.mobile.loading( "hide");
+												setTimeout(function(){ 
+												$.mobile.navigate("#page_list_user", { transition: "fade" 	});
+												},50);
+											/*if(status == "true"){
+												//alert("Upload Complete"+reasons);
+												setTimeout(function(){ 
+												$.mobile.navigate("#page_list_user", { transition: "fade" 	});
+												},50);
+											} else{
+												//alert("Cannot upload "+reasons);
+												return
+;
+											}	*/
+										}else{
+												$.mobile.loading( "hide");
+												alert("No pictureSource");
+											setTimeout(function(){ 
+												$.mobile.navigate("#page_list_user", { transition: "fade" 	});
+											},50);
+											
+										}
+										//alert(customer_id);
+
+										}else{
+										
+											var str_id = data['id'];
+											var index = str_id.lastIndexOf(',');
+											customer_id = str_id.substring(0,index);
+											//alert(customer_id);
+											sessionStorage.setItem("session_customer", customer_id);
+											//Global_customer_id = customer_id;
+											if(User_imageURI != ""){
+												
+												upload_Photo(User_imageURI,customer_id);
+												$.mobile.loading( "hide");
+												$( "#dialog-confirm-add-deposite" ).dialog({
+													resizable: false,
+													height:140,
+													modal: true,
+												});
+												//alert(status);
+												/*if(status == "true"){
+														alert("Upload Complete"+reasons);
+														$( "#dialog-confirm-add-deposite" ).dialog({
+															resizable: false,
+															height:140,
+															modal: true,
+														});
+												}else{
+												//alert("Cannot upload "+reasons);
+												return;
+												}*/
+											}else{
+														$.mobile.loading( "hide");
+														alert("No pictureSource");
+														$( "#dialog-confirm-add-deposite" ).dialog({
+															resizable: false,
+															height:140,
+															modal: true,
+														});
+											}
+										
+											
+										}
+									}else{
+										alert("Error " +data['status']);
+									}
+								},
+								error: function(msg){
+									console.log('failure' + msg );
+								}
+							});
+							
+					}
+			
+				
+
+					
+					function refreshPage() {
+						$.mobile.changePage(
+						window.location.href,
+						{
+							allowSamePageTransition : true,
+							transition              : 'none',
+							showLoadMsg             : false,
+							reloadPage              : true
+						}
+						);
+					}
+						
+		
+		</script>
+    </head>
+    	
+    <body>			
+	<div id="container">
+	<div data-role="page" id="page_list_user" class="ui-responsive-panel">
+		
+			<div data-role="content"  class="scrollable ui-content scroll-list">
+						<div class="content-topbutton">
+							 <button id="btn_add_user" class="ui-btn" >เพิ่มสมาชิก</button>
+							<!-- <a href="#page_add_user" class="ui-btn">เพิ่มสมาชิก</a> -->
+						</div>
+						<div data-role="fieldcontain">
+							<input id="searchData" type="search" name="search-2" id="search-2" value="" />
+						</div>
+						<div class="ui-grid-a">
+							  <div>
+									 <select name="select-choice-4" id="select-choice-1"> 
+										<option value="standard">เลือกเมมเบอร์</option> 
+							
+										
+									</select> 
+							  </div>
+							
+							  
+						</div>
+						
+						<div class="content-table">
+							 <table id="CustomerTable" data-role="table" class="ui-responsive footable">
+							  <thead>
+								<tr>
+								  <div>
+								  <th >ID.</th>
+								  <th >ชื่อ</th>
+								  <th >เมมเบอร์</th>
+								  <th >เบอร์</th>
+								  </div>
+								</tr>
+							  </thead>
+							  <tbody id="CustomerBody">
+								
+							  </tbody>
+							</table>
+						</div>
+			</div>
+	
+			<script type="text/javascript">
+				
+			</script>
+	</div>
+		
+	<div data-role="page" id="page_add_user" class="ui-responsive-panel">
+				
+			<div data-role="content"  class="scrollable ui-content scroll-list">
+			<div id="dialog-confirm-add-deposite" title="Succes">
+				<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>click "ok" to continue</p>
+				<a href="./drink_deposite_page.html#page_add_drink_deposite" rel="external" id="login" class="ui-btn">ok</a>
+			</div>
+					<div class="user-image">
+							 
+					   <img src="../img/logo.jpg" alt="log" class="img-logo" id="largeImage"/></br>
+					</div>
+						
+					<fieldset class="ui-grid-a">
+						<div class="ui-block-a"> <button class="ui-btn" onclick="capturePhoto();">Capture Photo</button> </div>
+						<div class="ui-block-b"> <button class="ui-btn" onclick="getPhoto( Camera.PictureSourceType.PHOTOLIBRARY );">From Gallery!!</button> </div>
+					</fieldset>	
+			<form id="add_form" >
+					
+					<!--<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="user_id">ไอดี</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="user_id" id="user_id" value="" class="ui-submit" onfocus="this.style.bakgroundColor='red'" onblur="this.style.bakgroundColor='white'"/>
+						</div>
+						
+					</div> --!-->
+					<div class="clear-block"></div>
+					<div class="clear-block"><br></div>
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="username">ชื่อสมาชิก</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="username" id='username' value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+					<div class="clear-block"><br></div>
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="phone_number">เบอร์มือถือ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="phone_number" id="phone_number" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					<div class="clear-block"></div>
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="brithday">วันเกิด</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="brithday" id="brithday" value="" class="ui-submit" readonly />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					<div class="clear-block"></div>
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="email">อีเมล์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="email" id="email" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					<div class="clear-block"></div>
+					
+					<div  class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="type">ประเภท</span>
+						</div>
+						
+							<!--<input type="text" name="type" id="type" value="" class="ui-submit" />
+							<select name="select-package" id="select-package">
+								<option value="standard">เลือกเมมเบอร์</option>
+								<option value="deposite">ฝากเหล้า</option>
+							 </select>-->
+						  <div id="mycheckbox" >
+						  <fieldset data-role="controlgroup">
+						  <input type="checkbox" name="checkbox-1a" id="checkbox-1a" data-iconpos="right">
+					      <label for="checkbox-1a">Cheetos</label>	
+						  <input type="checkbox" name="checkbox-2a" id="checkbox-2a" data-iconpos="right" >
+					      <label for="checkbox-2a">Cheetos</label>
+						  <input type="checkbox" name="checkbox-3a" id="checkbox-3a" data-iconpos="right">
+					      <label for="checkbox-3a">Cheetos</label>
+						  </fieldset>
+						  </div>
+					</div>
+				
+					
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle user-add">
+					  <div class="">
+						<!-- <input type="button" id="next" VALUE="เพิ่มสมาชิก" onClick="ajax_add_user()" class="ui-btn""/>-->
+						<button class="ui-btn" type="submit" >เพิ่มสมาชิก</button> 
+					  </div>
+					  
+					</div>
+			</form>
+			</div>
+	</div>
+	
+	<div data-role="page" id="page_customer_package" class="ui-responsive-panel">
+			<script type="text/javascript">
+				
+			</script>
+			
+			<div data-role="content"  class="scrollable ui-content scroll-list">
+			<form id="add_form" >
+					<div class="user-image">
+					   <img src="../img/logo.jpg" alt="log" class="img-logo" id="customer_package_largeImage"/></br>
+					</div>
+
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="user_id">ไอดี</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="user_id" id="txt_user_id" readonly value="" class="ui-submit"  onfocus="this.style.bakgroundColor='red'" onblur="this.style.bakgroundColor='white'"/>
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="username">ชื่อสมาชิก</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="username"  id="txt_username" value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="phone_number">เบอร์มือถือ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="phone_number"  id="txt_phone_number" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="brithday">วันเกิด</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="brithday" id="txt_brithday" readonly value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="email">อีเมล์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="email" id="txt_email" value=""  class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="type">หมายเหตุ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<textarea type="text" name="type" id="txt_note"  value="" class="ui-submit" ></textarea >
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					<div class="clear-block"></div>
+					<div id="drink_deposite" class="drink_deposite">
+					 <h3>ฝากเหล้า</h3>
+						<div>
+							<div id="customer_list_deposit"> 
+								<table id="table_list_deposit">
+									
+								</table>
+						
+							</div>	
+										<div class="content-topbutton-right">
+											<!--<button id="btn_add_user" class="ui-btn" >ดูลายระเอียด</button> --!-->
+											<a href="./drink_deposite_page.html#page_edit_deposite_page" rel="external" id="login" class="ui-btn">ดูลายระเอียด</a>
+										</div>
+							
+						</div>
+					</div>	
+					<div class="clear-block"></div>
+					<div class="customer_package">
+					
+					</div>
+					<div class="clear-block"></div>
+					<div id="add_more_package_customer" class="add_more_package_customer" >
+						<h3>เลือกเมมเบอร์</h3>
+						<div id="add_more_package_customer_list" class ="add_more_package_customer_list">
+								
+						</div>
+					</div>
+					
+				
+
+					
+			
+		
+				<div id="dialog_delete" title="Already served this bottle?">
+						<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?
+				</div>
+				
+					<!--
+					<div class="mem-wrap">
+					  <div class="mem-header">
+							<div class="ui-grid-a my-breakpoint">
+							  <div class="ui-block-a mem-panel">
+								<label>PACKAGE VIP001</label>
+							  </div>
+							  <div class="ui-block-b">
+									<div class="bubble block-inline">
+										<div class="talktext">
+											<a href="#">ลบ</a>
+										 </div>
+									</div>
+							  </div>
+							</div>
+					  </div>
+					  
+					  <div class="mem-item">
+						  <div class="">
+							  <div class="mem-panel mem-icon mem-icon-desc">
+									<label data-inline="true" class="alignleft">RED LABEL</label>
+									<label data-inline="true" class="alignright ">5/10</label>
+							  </div>
+							  
+							  <div class="mem-icon">
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+							  </div>
+						  </div>
+						     <div class="">
+							  <div class="mem-panel mem-icon mem-icon-desc">
+									<label data-inline="true" class="alignleft">BLACK LABEL</label>
+									<label data-inline="true" class="alignright ">8/10</label>
+							  </div>
+							  <div class="mem-icon">
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+							  </div>
+						  </div>
+						    <div class="">
+							  <div class="mem-panel mem-icon mem-icon-desc">
+									<label data-inline="true" class="alignleft">RED LABEL</label>
+									<label data-inline="true" class="alignright ">2/5</label>
+							  </div>
+							  <div class="mem-icon">
+									<div class="circle circle-red" ></div>
+									<div class="circle circle-red"></div>
+									<div class="circle circle-white"></div>
+									<div class="circle circle-white"></div>
+									<div class="circle circle-white"></div>
+			
+							  </div>
+						  </div>
+					  </div>
+					  <div class="mem-outdate">
+					  
+							<div class="ui-grid-a my-breakpoint">
+							  <div class="ui-block-a mem-panel">
+								<label>หมดอายุ</label>
+							  </div>
+
+							  <div class="ui-block-b mem-panel">
+								<label>1 ตุลาคม 2558</label>
+							  </div>
+							</div>
+
+					  </div>
+					  <div>
+						   <div class="mem-panel">
+								<label>FREE MIXER</label>
+						  </div>
+						   <div class="mem-panel">
+								<label>250/DRINK</label>
+						  </div>
+						   <div class="mem-panel">
+								<label>DISCOUNT 10%</label>
+						  </div>
+						</div>
+						<div class="mem-panel mem-note-panel">
+							<label>NOTE:</label>
+						
+							<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+						</div>
+					 </div>
+					-->
+			
+				
+
+			
+			</form>
+				<div class="ui-grid-a  mb-content-middle content-login">
+					
+						<div class="ui-block-a custom-block-a">
+							<button id="update_btn_package" class="ui-btn">บันทึก</button>
+						</div>
+						<div class="ui-block-b custom-block-b">
+							<button class="ui-btn" id="delete_customer" type="submit">ลบ</button>
+						</div>
+					  
+					</div>
+			</div>
+	</div>
+	
+	
+	<script type="text/javascript" src="../js/menubar.js"></script>
+	<script type="text/javascript">
+		
+	</script>
+	</div>
+    </body>
+</html>

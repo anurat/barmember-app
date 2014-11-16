@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	   <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />
+        <title>MEMBER DEMO APP</title>
+		
+		<!-- JS -->
+		
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		
+		<script src="../js/jquery.mobile-1.4.3.min.js"></script>
+		<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="../js/jquery.validate.min.js"></script>
+		<script src="../js/script.js"></script>
+		<script src="../js/jquery.mobile.paramsHandler-1.4.2.js"></script>
+		<script type="text/javascript" src="../js/passing.js"></script>
+		<script type="text/javascript" src="../cordova.js"></script>
+		<!-- CSS -->
+		<link rel="stylesheet" href="../css/jquery.mobile-1.4.3.css" />
+		<link rel="stylesheet" href="../css/jquery-ui-1.10.3.custom.min.css"/>
+		
+		<link rel="stylesheet" href="../css/styles.css" />
+	
+	
+    </head>
+    <body>
+		<div id="container">
+		<div data-role="page" id="package_list"  data-dom-cache="false">
+			
+				<div data-role="content"  class="scrollable ui-content scroll-list">
+						<div class="content-topbutton">
+							<a href="#page_add_package" class="ui-btn">เพิ่มเมมเบอร์</a>
+						</div>
+						<div class="package-block" id ="FirstLine">
+
+					
+							
+						</div>
+						
+				</div>
+				
+				<div id="dialog_delete" title="Delete Package?">
+				<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?
+				</div>
+		
+		<!--<script type="text/javascript" src="../../cordova.js"></script>-->
+		
+		<script type="text/javascript">
+		
+		$(document).bind("mobileinit", function() {
+			  $.support.touchOverflow = true;
+			  $.support.cors = true;
+			   $.mobile.defaultTransition = 'none';
+			  $.mobile.touchOverflowEnabled = true;
+			  $.mobile.toolbar.prototype.options.addBackBtn = true;
+			  $.mobile.allowCrossDomainPages = true;
+			  $.mobile.page.prototype.options.domCache = true;
+			  
+		
+	});
+	var jqmReady = $.Deferred();
+	var pgReady = $.Deferred();
+
+	// jqm ready
+	$(document).bind("pagecreate", jqmReady.resolve);
+
+	// phonegap ready
+	document.addEventListener("deviceready", pgReady.resolve, false);
+
+	// all ready :)
+	$.when(jqmReady, pgReady).then(function () {
+         $(document).trigger("pagebeforeshow"); 
+    });
+
+		
+			
+				
+			/*	$(document).on("pagebeforeshow","#page_update_package",function(){ // When entering page add
+					//alert("page_update_package is about to be shown");
+					$("#FirstLine" ).empty();
+					
+				});
+				
+				$(document).on("pagebeforehide","#page_update_package",function(){ // When entering page add
+					//alert("page_update_package is about to be shown");
+					get_list_package();
+					
+				});
+				
+				$(document).on("pagebeforeshow","#page_add_package",function(){ // When entering page add
+					//alert("page_add_package is about to be shown");
+					$("#FirstLine" ).empty();
+				});
+				$(document).on("pageshow","#page_add_package",function(){ // When entering page add
+					//alert("page_add_package is now shown");
+				});	*/
+				$(document).on("pagebeforehide","#page_add_package",function(){ // When leaving page add
+						$( "#start-date" ).datepicker("hide");
+					    $( "#end-date" ).datepicker("hide");
+				});	
+				$(document).on("pagehide","#page_add_package",function(){ // When leaving page add
+					/*$( "#start-date" ).datepicker("hide");
+					$( "#end-date" ).datepicker("hide");*/
+				});
+			
+				
+				/* $(document).bind("pagebeforechange", function( event, data ) {
+					$.mobile.pageData = (data && data.options && data.options.pageData)
+                                   ? data.options.pageData
+                                   : null;
+				});*/
+				// --------------------------- end of Checking ---------------------
+			/*$(function() {
+					//$("#FirstLine" ).empty();
+					$("#dialog_delete").hide();
+					$('#bars-button').click(function() {
+						$.mobile.activePage.find('.header-menu:visible').panel("open");
+					});
+		
+					//$("#FirstLine" ).empty();
+			});	*/
+			
+
+	
+			function get_list_package(){
+					$.ajax({
+						type: "GET",
+						url: "http://"+Global_url+"/memberws/restaurant2/restaurant_id_packages/11/1",
+						cache: false,
+						dataType: "JSON",
+						success: function(data){
+					
+							if(data['code'] == 2){
+								
+				
+							}else{
+								var obj = JSON.parse(JSON.stringify(data));
+								drawTable(obj);	
+												
+							}
+						}
+					});
+			}
+			$(document).on( "pagecreate", "#package_list", function ( event ) {
+			
+				
+				$("#dialog_delete").hide();
+				
+				
+			});
+				function drawTable(data) {
+					var temp="";
+			
+						for (var i = 0; i < data.length; i++) {
+						
+							 temp +="</br>"+drawRow(data[i],i);
+						
+							
+						}
+					//document.getElementById("FirstLine").innerHTML = temp;
+					
+					}
+
+					function drawRow(rowData,i) {
+
+					var FirstLine =	"<div class='package-header block-inline'><span id='package_name_"+i+"'>"+rowData.name+"</span></div>"
+								+"<div class='bubble block-inline'><div class='talktext'><a id='package_edit_"+i+"' href='#page_update_package?id="+rowData.package_id+" '>แก้ไข</a></div></div>"
+								+"<div class='bubble block-inline'><div class='talktext'><a id='package_delete_"+i+"' href='#' onClick='package_delete("+rowData.package_id+" ) ' > ลบ </a> </div></div>";
+					var temp_table = "<div class='package-detail'><table data-role='table'  id='package-detail_"+i+"' class='ui-responsive '>"	
+							+"<thead><tr><td class='column-border'>PRICE "+rowData.price+"</td><td class='column-border'>VALID "+rowData.valid_month+" MONTH</td><td>Start "+rowData.start_date+" - End "+rowData.end_date+" </td></tr></thead>";	
+					var count = 0;	
+					var temp_table_body	="<tbody>";
+						if(rowData.package_products.length != 0){
+							 
+							 for (var j=0;j<rowData.package_products.length; j++) {
+								if(count == 0) {
+									temp_table_body +="<tr>";
+								}
+								count ++;
+								if(count >0 && count <3){
+									temp_table_body+="<td class='column-border'> "+rowData.package_products[j].name+" "+rowData.package_products[j].number+"</td>";	
+								}
+								else{
+									temp_table_body+="<td > "+rowData.package_products[j].name+" "+rowData.package_products[j].number+"</td>";	
+								}
+								if(count == 3){
+									temp_table_body+="</tr>";
+									count = 0;
+								}
+								/*
+								temp_table_body+="<td class='column-border'> "+rowData.package_products[j].name+" "+rowData.package_products[j].number+"</td>";
+								if(j == rowData.package_products.length-1){
+									temp_table_body+="</tr>";
+									break;
+								}else if(count == 3){
+									temp_table_body+="</tr><tr>";
+									count = 0;
+								}
+								count++;
+								*/
+							 }
+						} 
+						count = 0;
+						temp_table_body +="<tr>";
+						if(rowData.package_options.length !=0){
+						
+							for (var j=0;j<rowData.package_options.length; j++) {
+								if(count == 0) {
+									temp_table_body +="<tr>";
+								}
+								count ++;
+								if(count >0 && count <3){
+									temp_table_body+="<td class='column-border'> <span>"+rowData.package_options[j].name+"</span></td>";
+								}
+								else{
+									temp_table_body+="<td> "+rowData.package_options[j].name+"</td>";
+								}
+								if(count == 3){
+									temp_table_body+="</tr>";
+									count = 0;
+								}
+							 }
+							/*
+							
+						  for (var j=0;j<rowData.package_options.length; j++) {
+							temp_table_body+="<td> "+rowData.package_options[j].name+"</td>";
+							if(j == rowData.package_options.length-1){
+								temp_table_body+="</tr>";
+								break;
+							}else if(count == 3){
+								temp_table_body+="</tr><tr>";
+								count = 0;
+							}
+							count++;
+						  }
+						  */
+						} 
+						
+						temp_table=	temp_table+temp_table_body+"</tbody></table></div></br>";
+						
+						 FirstLine	=FirstLine+temp_table;	
+				
+		
+						$("#FirstLine").append( FirstLine);
+						$("#package-detail_"+i).table().table( "refresh" ,true).trigger( "create" );
+						return FirstLine;
+					}
+					
+					function package_edit(){
+		
+					}
+		
+					function package_delete(x){
+					
+					var action = "DELETE_METHOD";
+					$( "#dialog_delete" ).dialog({
+					resizable: false,
+					height:200,
+					modal: true,
+					buttons: {
+						"Delete": function() {
+							$( this ).dialog( "close" );
+								$.ajax({
+									type: "POST",
+									url: "http://"+Global_url+"/memberws/restaurant2/package/11",
+									data: "action="+action+ "&package_id=" + x ,
+									cache: false,
+									dataType: "json",
+									success: function(data){
+										if(data['code'] == "FAILURE"){
+											alert("Somethig Error , please contact Connectiv asap");
+										}else{
+											alert(data['status']);
+											window.location.reload();
+										}
+									}
+								});
+						},
+						Cancel: function() {
+							$( this ).dialog( "close" );
+						}
+					}
+					});
+						/*	$.ajax({
+								type: "POST",
+								url: "http://"+Global_url+"/memberws/restaurant2/package/11",
+								data: "action="+action+ "&package_id=" + x ,
+								cache: false,
+								dataType: "json",
+								success: function(data){
+									if(data['code'] == "FAILURE"){
+									alert("Somethig Error , please contact Connectiv asap");
+									}else{
+									alert(data['status']);
+											window.location.reload();
+									}
+								}
+								});*/
+						$('#dialog_delete').dialog("open");
+					}	
+		
+		
+		/*$('#btn_add_package').click(function() {
+				setTimeout(function(){ 
+			
+				$.mobile.navigate("#page_add_package", { transition: "fade" });
+				//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+				//$.mobile.defaultPageTransition = 'fade'
+				},1000);
+				
+		});*/
+		
+        </script>
+		</div>
+		
+		<div data-role="page" id="page_add_package"  data-dom-cache="false" >
+		<script type="text/javascript">
+					$(document).on("pagebeforeshow","#package_list",function(){ // When entering pagetwo
+					//alert("page package_list is about to be shown");
+					get_list_package();
+					});
+					$(document).on("pageshow","#package_list",function(){ // When entering pagetwo
+					
+					//alert("page package_list is now shown");
+					  $("#page_add_package").find('input:text, input:password, input:file, select, textarea').val('');
+					  $("#page_add_package").find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+					});
+					$(document).on("pagebeforehide","#package_list",function(){ // When leaving pagetwo
+					//alert("page package_list is about to be hidden");
+					$("#FirstLine" ).empty();
+					});
+					$(document).on("pagehide","#package_list",function(){ // When leaving pagetwo
+					//alert("page package_list is now hidden");
+					});
+		
+		var num=1;
+		var num_option = 1;
+		var GlobalClass_array = new Array();
+	
+		 function create_index(data){
+				for (var i = 0; i < data.length; i++) {
+				
+					var member= new Member(data[i].name,data[i].group_id,data[i].products)  ;
+					GlobalClass_array.push( member);
+					}
+			//alert(GlobalClass_array[0].array.product_name);
+		}
+		
+		function Member(name,groupid,products){
+		  // Add object properties like this
+		var array = new Array();
+		this.group_name = name;
+		this.group_id = groupid;
+		this.array = products;
+		}
+		
+			$( document ).on( "pagecreate", "#page_add_package", function ( event ) {
+							$("#textarea").focus();			
+						$.ajax({
+						type: "GET",
+						url: "http://"+Global_url+"/memberws/restaurant2/restaurant_product_group/11/1",
+						cache: false,
+						dataType: "json",
+						success: function(data){
+					
+							if(data['code'] == 2){
+							
+							
+							}else{
+								
+								var obj = JSON.parse(JSON.stringify(data));
+								create_index(obj);
+								
+								$.each(GlobalClass_array, function(i, temp_obj){
+									//alert(temp_obj['name']);
+									  $('#ddl-cat-1').append('<option id="'+temp_obj['group_name']+'" value="'+temp_obj['group_name']+'">'+temp_obj['group_name']+'</option>');
+								});
+							
+							}
+						}
+						});
+				$('#add-button-product').click(function(){
+						var lastid = $("#add-package").children().last().attr("id");
+						if(lastid == undefined)
+						{
+							num = 1;
+						}
+						else
+						{
+							num = lastid.split("-");
+							num = parseInt(num[2])+1;						
+						}
+					
+						var content = '<div class="ui-grid-b" id="add-package-'+num+'">';
+						content += '<div class="ui-block-a">';
+						content += '<select class="ddl-group" name="ddl-cat-'+num+'" id="ddl-cat-'+num+'">';
+						content += '<option value="standard">เลือกกลุ่มสินค้า</option>';
+						content += '</select>';
+						content += '</div>';
+						content += '<div class="ui-block-b">';
+						content += '<select class="ddl-item" name="ddl-item-'+num+'" id="ddl-item-'+num+'">';
+						content += '<option value="standard">เลือกสินค้า</option>';
+						content += '</select>';
+						content += '</div>';
+						content += '<div class="ui-block-c">';
+						content += '<input type="number" id="ddl-quantity-'+num+'" name="ddl-quantity-'+num+'" min="1" max="6" value="1" class="update-ddl-quantity" />';
+						content += '</select>';
+						content += '</div>';
+						content += '</div>';
+						$('.add-package').append(content);
+						$.each(GlobalClass_array, function(i, temp_obj){
+							$('#ddl-cat-'+num).append('<option id="'+temp_obj['group_name']+'" value="'+temp_obj['group_name']+'">'+temp_obj['group_name']+'</option>');
+						});
+						
+						$('#ddl-cat-'+num).selectmenu().selectmenu('refresh', true);
+						$('#ddl-item-'+num).selectmenu().selectmenu('refresh', true);
+						$('#ddl-quantity-'+num).textinput().textinput('refresh', true);
+						
+						$('#myTextField').textinput();
+						$('#ddl-cat-'+num).on('change', function() {
+						//	alert($( '#'+$(this).attr('id') ).val());
+							var temp_group_name =$( '#'+$(this).attr('id') ).val();
+							//  $('#ddl-item-'+num).prop('selectedIndex',0);
+							$("select[name='ddl-item-"+num+"'] option:not(:first)").remove().end();
+						
+								for(var j = 0 ; j < GlobalClass_array.length ; j ++){
+									if (GlobalClass_array[j].group_name == temp_group_name){
+										
+											for(var z= 0 ; z < GlobalClass_array[j].array.length ;z++) {
+													//("select[name='ddl-cat-'"+num+"'] option").not(":eq(1)").val('');
+													$('#ddl-item-'+num).append('<option id="'+GlobalClass_array[j].array[z].product_name+'" value="'+GlobalClass_array[j].array[z].product_id+'">'+GlobalClass_array[j].array[z].product_name+'</option>');
+										
+											}
+									}
+							}
+							$('#ddl-item-'+num).selectmenu().selectmenu('refresh', true);
+						});
+					
+						
+				});
+					$('#ddl-cat-1').on('change', function() {
+							/// $("#ddl-item-1").val("standard");
+					//	alert("dd");
+							var temp_group_name =$( '#'+$(this).attr('id') ).val();
+							 
+							$("select[name='ddl-item-1'] option:not(:first)").remove().end();
+							
+								for(var j = 0 ; j < GlobalClass_array.length ; j ++){
+									if (GlobalClass_array[j].group_name == temp_group_name){
+										
+											for(var z= 0 ; z < GlobalClass_array[j].array.length ;z++) {
+													//("select[name='ddl-cat-'"+num+"'] option").not(":eq(1)").val('');
+													$('#ddl-item-1').append('<option id="'+GlobalClass_array[j].array[z].product_name+'" value="'+GlobalClass_array[j].array[z].product_id+'">'+GlobalClass_array[j].array[z].product_name+'</option>');
+											}
+									}
+								}
+								///	$('#ddl-item-1')[1].checked = true;
+							$('#ddl-item-'+num).selectmenu().selectmenu('refresh', true);
+					});
+			
+				
+				$('#add-info').click(function(){
+						var lastid = $('#package-more-info').children().last().attr("id");
+						if(lastid == undefined)
+						{
+							num_option = 1;
+						}
+						else
+						{
+							num_option = lastid.split("-");
+							num_option = parseInt(num_option[2])+1;						
+						}
+						
+					
+						var content = '<div id="package-info-'+num_option+'" class="package-info">';
+						content += '<div class="label-info block-inline add-margin-4">';
+						content += '<span>เพิ่มเติม</span>';
+						content += '</div>';
+						content += '<div class="input-info block-inline add-margin-4">';
+						content += '<input type="text" value="" name="txt-info-'+num_option+'" id="txt-info-'+num_option+'"  />';
+						content += '</div>';
+						content += '<div class="bubble block-inline ">';
+						content += '<div class="talktext">';
+						content += '<a href="#"  class="delete-butt" id="delete-'+num_option+'">ลบ</a>';
+						content += '</div>';
+						content += '</div>';
+						content += '</div>';
+						$('#package-more-info').append(content);
+						$('#txt-info-'+num_option).textinput().textinput('refresh', true);
+						$('.add-content').animate({
+								scrollTop: $('.add-content').get(0).scrollHeight
+						}, 500);
+						$('.delete-butt').click(function(){
+								var did = $(this).attr("id");
+								var id = did.split("-");
+								$('#package-info-'+id[1]).remove();
+						});
+				});
+				$('.delete-butt').click(function(){
+						var did = $(this).attr("id");
+						var id = did.split("-");
+						$('#package-info-'+id[1]).remove();
+				});
+				
+				$('#add_package_page').validate({
+							rules: {
+							member_name: "required",
+							price: "required",
+							expireddate : "required"
+							},
+							submitHandler: function(form) {
+								//ajax_add_package();
+								ajax_add_package();
+							/*	$("#member_name").val("");
+								$("#price").val("");
+								$("#expireddate").val("");*/
+							}
+				});
+				function ajax_add_package(){
+				var action = "ADD_METHOD";
+				var restaurant_id = 1;
+					var member_name =$('#member_name').val();
+					var member_price = $("#price").val();
+					var member_expireddate =$("#expireddate").val();
+					var array_package = new Array();
+					var array_product = new Array();
+					var array_number = new Array();
+					var array_package_option = new Array();
+					var index = 0;
+					 for(var j = 1 ; j<=num ; j++){
+							if($('#ddl-cat-'+j).val() != "standard"){
+								if($('#ddl-item-'+j).val()!= "standard"){
+									
+									if($("#ddl-quantity-"+j).val()!= "null"){
+										array_package[j-1]= $('#ddl-cat-'+j).val();
+										array_product[j-1]=$('#ddl-item-'+j).val();
+										array_number[j-1]=$("#ddl-quantity-"+j).val();
+									}
+								}
+							}	
+					 }
+		
+				
+					 for(var z = 1 ; z<=num_option ; z++){
+							if($('#txt-info-'+z).val() != ""){
+								 array_package_option[z-1] = $('#txt-info-'+z).val()
+							}	
+					 }
+					 
+					 var package_serialize = JSON.stringify(array_package);
+					 var product_serialize = JSON.stringify(array_product);
+					 var number_serialize = JSON.stringify(array_number);
+					 var package_option_serialize = JSON.stringify(array_package_option);
+					/* alert(package_serialize);
+					 alert(product_serialize);
+					 alert(package_option_serialize);
+					 alert(number_serialize);*/
+						$.ajax({
+						type: "POST",
+						url: "http://"+Global_url+"/memberws/restaurant2/package/11",
+						cache: false,
+						dataType: "json",
+						data: "action="+action+ "&name=" + member_name + "&price=" +member_price 
+						+ "&expireddate=" +  member_expireddate+ "&restaurant_id=" +  restaurant_id+"&product_id="+ product_serialize
+						+ "&number="+number_serialize + "&package_option_name=" + package_option_serialize + "&package=" + package_serialize ,
+						success: function(data){
+					
+							if(data['code'] == 2){
+							
+							alert(data['status']+" :"+data['action']);
+							}else{
+								
+							alert(data['status']+" :"+data['action']);
+								setTimeout(function(){ 
+										$.mobile.navigate("#package_list", { transition: "fade" 	});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+										//$.mobile.defaultPageTransition = 'fade'
+						
+										},50);
+							}
+						}
+						});
+				}
+				
+				
+				$('#radio-choice-2').click(function(){
+					$("#expireddate").val ("");	
+					if($("#start-date").val()&& $("#end-date").val()){
+					$("#expireddate").val(""+$("#start-date").val()+"-"+$("#end-date").val());
+					}else{
+					alert("Please select Date");
+					}
+				});
+				$('#radio-choice-1').click(function(){
+					$("#expireddate").val ("");	
+					var temp_value = $( "#package-input-date1" ).val();
+					$("#expireddate").val(temp_value);
+				});
+				
+				$('#package-input-date1').on('change', function() {
+					if($('#radio-choice-1').is(':checked')){
+					var temp_value =$( "#package-input-date1" ).val();
+					$("#expireddate").val(temp_value);
+					}
+				});
+				
+				$('#start-date').on('change', function() {
+					if( $("#start-date").val()&& $("#end-date").val() && $('#radio-choice-2').is(':checked')){
+					$("#expireddate").val(""+$("#start-date").val()+"-"+$("#end-date").val());
+					}
+				});
+				
+				$('#end-date').on('change', function() {
+					if($("#start-date").val()&& $("#end-date").val() && $('#radio-choice-2').is(':checked')){
+					$("#expireddate").val(""+$("#start-date").val()+"-"+$("#end-date").val());
+					}
+				});
+				
+			    $( "#start-date" ).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							   changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100',
+							 onSelect: function(dateStr) {
+									$('#end-date').datepicker('option', 'minDate', $(this).datepicker('getDate') || 0);
+										if( $("#start-date").val()&& $("#end-date").val() && $('#radio-choice-2').is(':checked')){
+										$("#expireddate").val(""+$("#start-date").val()+"-"+$("#end-date").val());
+										}
+									}
+				});
+				$( "#end-date" ).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							   changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100',
+							 onSelect: function(dateStr) {
+										$('#start-date').datepicker('option', 'maxDate', $(this).datepicker('getDate'));
+											if($("#start-date").val()&& $("#end-date").val() && $('#radio-choice-2').is(':checked')){
+											$("#expireddate").val(""+$("#start-date").val()+"-"+$("#end-date").val());
+											}
+										
+										}
+				});
+				
+				$('#flip-1').flipswitch().flipswitch('refresh', true);
+			});
+			
+			
+			
+		</script>	
+				<div data-role="content"  class="scrollable ui-content scroll-list add-content">
+				<form id="add_package_page" >
+					<div class="align-right">
+						<select name="flip-1" id="flip-1"  data-role="slider" data-mini="true" >
+							<option value="off">Inactive</option>
+							<option selected="selected" value="on" >Active</option>
+						</select> 
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="member_name">เมมเบอร์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="member_name" id="member_name"  value="" class="ui-submit" />
+						</div>
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="price">ราคา</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="price" id='price' value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="expireddate">หมดอายุ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="expireddate" id='expireddate' value="" readonly="readonly"  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-right button-package">
+					
+						<div  class="package-input package-input-calendar" >
+						
+								<div class="carlendar">
+							<input type="radio" name="radio-choice" id="radio-choice-2" value="choice-2">
+									<input type="text" id="start-date" class="date" readonly />
+								 </div>
+								<span class="dash">-</span>
+								 <div class="carlendar">
+									<input type="text"  id="end-date" class="date"  readonly />
+								</div>
+							
+						</div>
+					
+						<div class="package-input package-input-date" >
+							  <input type="radio" name="radio-choice" id="radio-choice-1" value="choice-1" >
+							  <select name="select-choice-1" id="package-input-date1">
+								<option value="standard">เดือน</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+							  </select>
+						
+						</div>
+		
+					</div>
+					<div class="clear-block"></div>
+					<div class="add-package" id="add-package">
+						<div class="ui-grid-b" id="add-package-1">
+							<div class="ui-block-a">
+								 <select  class="ddl-group" name="ddl-cat-1" id="ddl-cat-1" >
+									<option value="standard">เลือกกลุ่มสินค้า</option>
+								
+								  </select>
+							</div>
+							<div class="ui-block-b">
+								 <select class="ddl-item" name="ddl-item-1" id="ddl-item-1" >
+									<option value="standard">เลือกสินค้า</option>
+								
+								  </select>
+							</div>
+							<div class="ui-block-c">
+											<input type="number" name="ddl-quantity-1" id="ddl-quantity-1"  min="1" max="6" value="1" class="update-ddl-quantity"/>
+
+							</div>
+							
+						</div><!-- /grid-b -->
+					
+					</div>
+					<div class="content-topbutton align-right">
+							<a class="ui-btn" id="add-button-product">เพิ่มรายการ</a>
+					</div>
+				
+					<div data-role="fieldcontain" id="package-more-info">
+						<div id="package-info-1" class="package-info">
+							<div class="label-info block-inline">
+								<span>เพิ่มเติม</span>
+							</div>
+							
+							<div class="input-info block-inline">
+								<input type="text"  value="" id="txt-info-1" name="txt-info-1"/>
+							</div>
+
+							<div class="bubble block-inline">
+								<div class="talktext">
+									<a href="#" class="delete-butt" id="delete-1">ลบ</a>
+								 </div>
+							</div>
+						</div>
+					</div>
+					<div class="content-topbutton align-right ">
+							<a class="ui-btn" id="add-info" >เพิ่มเติม</a>
+					</div>
+					
+					<div data-role="fieldcontain" class="txt-note">
+						<textarea name="textarea" id="textarea" placeholder="NOTE"></textarea>
+					</div>
+					
+					
+					
+					<div class="ui-grid-a  mb-content-middle content-login">
+					
+					  <div class="ui-block-a custom-block-a">
+						<button id="login" class="ui-btn">กลับหน้าหลัก</button>
+					  </div>
+					  <div class="ui-block-b custom-block-b">
+						<button class="ui-btn" id="btn_add_package" type="submit">บันทึก</button>
+					  </div>
+					  
+					</div>
+					
+				</form>	
+					
+				</div>
+				
+		
+		</div>
+		
+		<div data-role="page" id="page_update_package"  data-dom-cache="false" >
+		<script type="text/javascript">
+				
+					
+		var update_Global_id = 0;
+		var update_num=1;
+		var update_num_option = 1;
+		var update_GlobalClass_array = null ;
+	
+		
+			$(document).on("pagebeforehide","#page_update_package",function(){ // When leaving page add
+						$( "#update_start-date" ).datepicker("hide");
+					    $( "#update_end-date" ).datepicker("hide");
+				});	
+		 function update_create_index(data){
+				for (var i = 0; i < data.length; i++) {
+				
+					var update_member= new update_Member(data[i].name,data[i].product_group_id,data[i].products)  ;
+					
+					update_GlobalClass_array.push( update_member);
+					}
+			//alert(GlobalClass_array[0].array.product_name);
+		}
+		
+		function update_Member(name,groupid,products){
+		  // Add object properties like this
+		var array = new Array();
+		this.group_name = name;
+		this.group_id = groupid;
+		this.array = products;
+		}
+	
+		
+		  $("#page_update_package").on('pagebeforeshow ', function(event) {
+				$("#page_update_package").find('input:text, input:password, input:file, select, textarea').val('');
+											
+				$("#page_update_package").find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+			
+				update_GlobalClass_array = null;
+				update_GlobalClass_array = new Array();
+				update_num=1;
+				update_num_option = 1;
+				$("select[name='update_ddl-cat-"+update_num+"'] option:not(:first)").remove().end();
+				
+						$.ajax({
+						type: "GET",
+						url: "http://"+Global_url+"/memberws/restaurant2/restaurant_product_group/11/1",
+						cache: false,
+						dataType: "json",
+						success: function(data){		
+							if(data['code'] == 2){
+								alert("Somethig Error ,"+data['status']);
+							}else{
+								
+								var update_obj = JSON.parse(JSON.stringify(data));
+								update_create_index(update_obj);
+							
+								$.each(update_GlobalClass_array, function(i, temp_obj){
+									//alert(temp_obj['name']);
+									  $('#update_ddl-cat-1').append('<option id="'+temp_obj['group_name']+'" value="'+temp_obj['group_id']+'">'+temp_obj['group_name']+'</option>');
+								});
+								$('#update_ddl-cat-1').selectmenu().selectmenu('refresh', true);
+							}
+						}
+						});
+						
+				$.ajax({
+						type: "GET",
+						url: "http://"+Global_url+"/memberws/restaurant2/package/11/"+Global_id,
+						cache: false,
+						dataType: "json",
+						success: function(data){
+						
+							//$("#page_update_package").find('input:text, input:password, input:file, select, textarea').val('');
+							//$("#page_update_package").find('input:radio, input:checkbox').removeAttr('checked').removeAttr('selected');
+							//$(select).selectmenu().selectmenu('refresh', true);
+							
+							
+							console.log($('select.update_ddl-group'));
+							
+							$('select.update_ddl-group').not('#update_ddl-cat-1').remove();
+							$('select.update_ddl-group').selectmenu().selectmenu('refresh', true);
+
+							$('select.update_ddl-item').not('#update_ddl-item-1').remove();
+							$('select.update_ddl-item').selectmenu().selectmenu('refresh', true);
+							
+							$('input.update-ddl-quantity').not('#update_ddl-quantity-1').remove();
+							$('input.update-ddl-quantity').textinput().textinput('refresh', true);
+							$('input.update-ddl-quantity').val(1);
+					
+							
+							$('.package-info').not('#update_package-info-1').remove();
+							//$('.update_id_txt-info').textinput().textinput('refresh', true);
+							
+							if(data['code'] == 2){
+							}else{
+								var update_obj = JSON.parse(JSON.stringify(data));
+								$("#update_member_name").val(update_obj.name);
+								$("#update_price").val(update_obj.price);
+								if(update_obj.valid_month!=0){
+									$("#update_expireddate").val(update_obj.valid_month);
+								}else if(update_obj.start_date!=0 && update_obj.end_date!=0){
+									$("#update_expireddate").val(update_obj.start_date+"-"+update_obj.end_date);
+								}
+								
+								if(update_obj.package_products.length != 0){
+									
+									console.log($('.ddl-group'));
+									
+									for (var x=0;x<update_obj.package_products.length; x++) {
+											//alert("1111update_obj.package_products[x].package_product_id "+update_obj.package_products[x].package_product_id);
+										if(update_num==1){
+											//alert("871");
+										//	alert(update_obj.package_products[j].group);.prop("selectedIndex", 3);
+											$('#update_ddl-cat-1').prop("selectedIndex",update_obj.package_products[x].product_group_id);
+											var update_temp_group_name =update_obj.package_products[x].group;
+											$("select[name='update_ddl-item-1'] option:not(:first)").remove().end();		
+											for(var j = 0 ; j < update_GlobalClass_array.length ; j ++){
+											
+												if (update_GlobalClass_array[j].group_name == update_temp_group_name){
+													for(var z= 0 ; z < update_GlobalClass_array[j].array.length ;z++) {
+													//("select[name='ddl-cat-'"+num+"'] option").not(":eq(1)").val('');
+														$('#update_ddl-item-1').append('<option id="'+update_GlobalClass_array[j].array[z].product_name+'" value="'+update_GlobalClass_array[j].array[z].product_id+'">'+update_GlobalClass_array[j].array[z].product_name+'</option>');
+														if(update_GlobalClass_array[j].array[z].product_id == update_obj.package_products[x].product_id ){
+															
+															$('#update_ddl-item-1').prop("selectedIndex",z+1);
+															//$('#update_ddl-quantity-1').val(update_obj.package_products[x].number );
+														}
+													}
+												}
+											}
+											
+								
+											$('#update_ddl-quantity-1').val(update_obj.package_products[x].number );
+											$('#update_package_product-1').val(update_obj.package_products[x].package_product_id );	
+											$('#update_ddl-cat-1').selectmenu().selectmenu('refresh', true);
+											$('#update_ddl-item-1').selectmenu().selectmenu('refresh', true);
+											$('#update_ddl-quantity-1').textinput().textinput('refresh', true);	
+											
+											//alert("898");
+											$('#update_ddl-cat-1').on('change', function() {
+													var update_temp_group_name =$( '#'+$(this).attr('id') ).val();
+													//  $('#ddl-item-'+num).prop('selectedIndex',0);
+													//alert("902"+update_temp_group_name);
+													$("select[name='update_ddl-item-1'] option:not(:first)").remove().end();
+														
+														for(var j = 0 ; j < update_GlobalClass_array.length ; j ++){
+															if (update_GlobalClass_array[j].group_id == update_temp_group_name){
+																for(var z= 0 ; z < update_GlobalClass_array[j].array.length ;z++) {
+																		//("select[name='ddl-cat-'"+num+"'] option").not(":eq(1)").val('');
+																		$('#update_ddl-item-1').append('<option id="'+update_GlobalClass_array[j].array[z].product_name+'" value="'+update_GlobalClass_array[j].array[z].product_id+'">'+update_GlobalClass_array[j].array[z].product_name+'</option>');
+																}
+															}
+														}
+													$('#update_ddl-item-1').selectmenu().selectmenu('refresh', true);
+											});
+											update_num++;
+										}else{
+											//alert("pemika");
+											//$("select[name='update_ddl-cat-"+update_num+"'] option:not(:first)").remove().end();
+											var content = '<div class="ui-grid-b" id="update_add-package-'+update_num+'">';
+											content += '<div class="ui-block-a">';
+											content += '<select class="update_ddl-group" name="update_ddl-cat-'+update_num+'" id="update_ddl-cat-'+update_num+'">';
+											content += '<option value="standard">เลือกกลุ่มสินค้า</option>';
+											content += '</select>';
+											content += '</div>';
+											content += '<div class="ui-block-b">';
+											content += '<select class="update_ddl-item" name="update_ddl-item-'+update_num+'" id="update_ddl-item-'+update_num+'">';
+											content += '<option value="standard">เลือกสินค้า</option>';
+											content += '</select>';
+											content += '</div>';
+											content += '<div class="ui-block-c">';
+											content += '<input type="number" id="update_ddl-quantity-'+update_num+'" name="update_ddl-quantity-'+update_num+'" min="1" max="6" value="1" class="update-ddl-quantity" />';
+									
+											content += '</div>';
+											content +=	'<input type="hidden" value="'+update_obj.package_products[x].package_product_id+'" name="update_package_product-'+update_num+'" id="update_package_product-'+update_num+'" />';
+											content += '</div>';
+											$('#update_add-package').append(content);
+											$.each(update_GlobalClass_array, function(i, temp_obj){
+													$('#update_ddl-cat-'+update_num).append('<option id="'+temp_obj['group_name']+'" value="'+temp_obj['group_id']+'">'+temp_obj['group_name']+'</option>');
+											});
+											$('#update_ddl-cat-'+update_num).prop("selectedIndex",update_obj.package_products[x].product_group_id);
+											var update_temp_group_name =update_obj.package_products[x].product_group_id; //sad
+											$("select[name='update_ddl-item-"+update_num+"'] option:not(:first)").remove().end();		
+											
+											for(var j = 0 ; j < update_GlobalClass_array.length ; j ++){
+											
+												if (update_GlobalClass_array[j].group_id == update_temp_group_name){
+													for(var z= 0 ; z < update_GlobalClass_array[j].array.length ;z++) {
+													//("select[name='ddl-cat-'"+num+"'] option").not(":eq(1)").val('');
+														$('#update_ddl-item-'+update_num).append('<option id="'+update_GlobalClass_array[j].array[z].product_name+'" value="'+update_GlobalClass_array[j].array[z].product_id+'">'+update_GlobalClass_array[j].array[z].product_name+'</option>');
+														if(update_GlobalClass_array[j].array[z].product_id == update_obj.package_products[x].product_id ){
+															
+															$('#update_ddl-item-'+update_num).prop("selectedIndex",z+1);
+															//$('#update_ddl-quantity-1').val(update_obj.package_products[x].number );
+														}
+													}
+												}
+											}
+											$('#update_ddl-quantity-'+update_num).val(update_obj.package_products[x].number );
+											$('#update_package_product-'+update_num).val(update_obj.package_products[x].package_product_id );							
+											
+											$('#update_ddl-cat-'+update_num).selectmenu().selectmenu('refresh', true);
+											$('#update_ddl-item-'+update_num).selectmenu().selectmenu('refresh', true);
+											$('#update_ddl-quantity-'+update_num).textinput().textinput('refresh', true);
+											
+											//alert("964");
+											$('#update_ddl-cat-'+update_num).on('change', function() {
+													var update_temp_group_name =$( '#'+$(this).attr('id') ).val();
+													var select = this.id;
+													var id = select.split("-");
+											
+													$("#update_ddl-item-"+id[2]+" option:not(:first)").remove().end();		
+													//console.log(update_GlobalClass_array);
+														for(var j = 0 ; j < update_GlobalClass_array.length ; j ++){
+															if (update_GlobalClass_array[j].group_id == update_temp_group_name){
+																for(var z= 0 ; z < update_GlobalClass_array[j].array.length ;z++) {
+																		console.log("Item: "+update_GlobalClass_array[j].array[z].product_name);
+																		$("#update_ddl-item-"+id[2]).append('<option id="'+update_GlobalClass_array[j].array[z].product_name+'" value="'+update_GlobalClass_array[j].array[z].product_id+'">'+update_GlobalClass_array[j].array[z].product_name+'</option>');
+																}
+															}
+														}
+													
+													$("#update_ddl-item-"+id[2]).selectmenu().selectmenu('refresh', true);
+											});
+
+											
+											
+											update_num++;
+										}
+										
+										
+									}
+									
+								}else{
+									console.log($('input.update-ddl-quantity'));
+										
+/*
+									$('select.ddl-group').selectmenu().selectmenu('refresh', true);
+									$('select.ddl-item').selectmenu().selectmenu('refresh', true);
+									$('input.update-ddl-quantity').textinput().textinput('refresh', true);
+									$('input.update-ddl-quantity').val(1);
+									*/
+									alert("No Products in this Package");
+								}
+								//alert("update_num "+update_num);
+								if(update_obj.package_options.length !=0){
+								
+										for (var j=0;j<update_obj.package_options.length; j++) {
+		
+										if(update_num_option == 1){
+											$("#update_txt-info-1").val(update_obj.package_options[j].name);
+											$("#update_id_txt-info-1").val(update_obj.package_options[j].option_id);
+										
+											update_num_option++;
+										}else{
+									
+									
+										var content = '<div id="update_package-info-'+update_num_option+'" class="package-info">';
+										content += '<div class="label-info block-inline add-margin-4">';
+										content += '<span>เพิ่มเติม</span>';
+										content += '</div>';
+										content += '<div class="input-info block-inline add-margin-4">';
+										content += '<input type="text" value="'+update_obj.package_options[j].name+'" name="update_txt-info-'+update_num_option+'" id="update_txt-info-'+update_num_option+'"  class="update_id_txt-info"  />';
+										content += '<input type="hidden" value="'+update_obj.package_options[j].option_id+'" name="update_id_txt-info-'+update_num_option+'"  id="update_id_txt-info-'+update_num_option+'"  />';
+										content += '</div>';
+										content += '<div class="bubble block-inline ">';
+										content += '<div class="talktext">';
+										content += '<a href="#"  class="delete-butt" id="update_delete-'+update_num_option+'">ลบ</a>';
+										content += '</div>';
+										content += '</div>';
+										content += '</div>';
+										$('#update_package-more-info').append(content);
+				
+										$('#update_txt-info-'+update_num_option).textinput().textinput('refresh', true);
+										
+										$('.delete-butt').click(function(){
+											var did = $(this).attr("id");
+											var id = did.split("-");
+											$('#update_package-info-'+id[1]).remove();
+										});		
+											update_num_option++;
+										}
+										}	
+								}else{
+									alert("No Options in this Package");
+									//$('select.ddl-group').selectmenu().selectmenu('refresh', true);
+								//	$('select.ddl-item').selectmenu().selectmenu('refresh', true);
+									//$('input.update-ddl-quantity').textinput().textinput('refresh', true);
+								}
+								
+							}
+						}
+				});	
+				
+        });
+			$( document ).on( "pagecreate", "#page_update_package", function ( event ) {
+				$("#update_textarea").focus();
+				$('#update_add-button-product').click(function(){
+						var update_lastid = $("#update_add-package").children().last().attr("id");
+						
+						if(update_lastid == undefined)
+						{
+							update_num = 1;
+						}
+						else
+						{
+							//update_num = update_lastid.split("-");
+							update_num++;				
+						}
+					
+						var content = '<div class="ui-grid-b" id="update_add-package-'+update_num+'">';
+						content += '<div class="ui-block-a">';
+						content += '<select class="update_ddl-group" name="update_ddl-cat-'+update_num+'" id="update_ddl-cat-'+update_num+'">';
+						content += '<option value="standard">เลือกกลุ่มสินค้า</option>';
+						content += '</select>';
+						content += '</div>';
+						content += '<div class="ui-block-b">';
+						content += '<select class="update_ddl-item" name="update_ddl-item-'+update_num+'" id="update_ddl-item-'+update_num+'">';
+						content += '<option value="standard">เลือกสินค้า</option>';
+						content += '</select>';
+						content += '</div>';
+						content += '<div class="ui-block-c">';
+						content += '<input type="number" id="update_ddl-quantity-'+update_num+'" name="update_ddl-quantity-'+update_num+'" min="1" max="6" value="1" class="update-ddl-quantity" />';
+						content += '</div>';
+						content +=	'<input type="hidden" value="new" name="update_package_product-'+update_num+'" id="update_package_product-'+update_num+'" />';
+						content += '</div>';
+						$('#update_add-package').append(content);
+						$.each(update_GlobalClass_array, function(i, temp_obj){
+							$('#update_ddl-cat-'+update_num).append('<option id="'+temp_obj['group_name']+'" value="'+temp_obj['group_id']+'">'+temp_obj['group_name']+'</option>');
+						});
+						$('#update_ddl-cat-'+update_num).selectmenu().selectmenu('refresh', true);
+						$('#update_ddl-item-'+update_num).selectmenu().selectmenu('refresh', true);
+						$('#update_ddl-quantity-'+update_num).textinput().textinput('refresh', true);
+						$('#update_myTextField').textinput();
+						
+						$('#update_ddl-cat-'+update_num).on('change', function() {
+							var update_temp_group_name =$( '#'+$(this).attr('id') ).val();
+							//  $('#ddl-item-'+num).prop('selectedIndex',0);
+							$("select[name='update_ddl-item-"+update_num+"'] option:not(:first)").remove().end();
+						
+								for(var j = 0 ; j < update_GlobalClass_array.length ; j ++){
+									if (update_GlobalClass_array[j].group_id == update_temp_group_name){
+											for(var z= 0 ; z < update_GlobalClass_array[j].array.length ;z++) {
+													//("select[name='ddl-cat-'"+num+"'] option").not(":eq(1)").val('');
+													$('#update_ddl-item-'+update_num).append('<option id="'+update_GlobalClass_array[j].array[z].product_name+'" value="'+update_GlobalClass_array[j].array[z].product_id+'">'+update_GlobalClass_array[j].array[z].product_name+'</option>');
+											}
+									}
+								}
+							$('#update_ddl-item-'+update_num).selectmenu().selectmenu('refresh', true);
+						});
+					//alert("update_num "+update_num);
+				});
+					$('#update_ddl-cat-1').on('change', function() {
+							/// $("#ddl-item-1").val("standard");
+						
+							var update_temp_group_name =$( '#'+$(this).attr('id') ).val();
+							 
+							$("select[name='update_ddl-item-1'] option:not(:first)").remove().end();
+							
+								for(var j = 0 ; j < update_GlobalClass_array.length ; j ++){
+									if (update_GlobalClass_array[j].group_id == update_temp_group_name){
+										
+											for(var z= 0 ; z < update_GlobalClass_array[j].array.length ;z++) {
+													//("select[name='ddl-cat-'"+num+"'] option").not(":eq(1)").val('');
+													$('#update_ddl-item-1').append('<option id="'+update_GlobalClass_array[j].array[z].product_name+'" value="'+update_GlobalClass_array[j].array[z].product_id+'">'+update_GlobalClass_array[j].array[z].product_name+'</option>');
+											}
+									}
+								}
+								///	$('#ddl-item-1')[1].checked = true;
+							$('#update_ddl-item-1').selectmenu().selectmenu('refresh', true);	
+					});
+			
+				
+				$('#update_add-info').click(function(){
+						
+						var update_lastid = $('#update_package-more-info').children().last().attr("id");
+						//alert(update_lastid);
+						if(update_lastid == undefined)
+						{
+							update_num_option = 1;
+							var content = '<div id="update_package-info-'+update_num_option+'" class="package-info">';
+						content += '<div class="label-info block-inline add-margin-4">';
+						content += '<span>เพิ่มเติม</span>';
+						content += '</div>';
+						content += '<div class="input-info block-inline add-margin-4">';
+						content += '<input type="text" value="" name="update_txt-info-'+update_num_option+'" id="update_txt-info-'+update_num_option+'" class="update_id_txt-info"  />';
+						content += '<input type="hidden" value="new" name="update_id_txt-info-'+update_num_option+'"  id="update_id_txt-info-'+update_num_option+'"  />';
+						content += '</div>';
+						content += '<div class="bubble block-inline ">';
+						content += '<div class="talktext">';
+						content += '<a href="#"  class="delete-butt" id="update_delete-'+update_num_option+'">ลบ</a>';
+						content += '</div>';
+						content += '</div>';
+						content += '</div>';
+						$('#update_package-more-info').append(content);
+				
+						$('#update_txt-info-'+update_num_option).textinput().textinput('refresh', true);
+						$('.update-content').animate({
+								scrollTop: $('.update-content').get(0).scrollHeight
+						}, 500);
+						$('.delete-butt').click(function(){
+								var did = $(this).attr("id");
+								var id = did.split("-");
+								$('#update_package-info-'+id[1]).remove();
+						});
+						}
+						else
+						{
+							//update_num_option = update_lastid.split("-");
+							//update_num_option = update_num_option[2];
+							update_num_option++;	
+							var content = '<div id="update_package-info-'+update_num_option+'" class="package-info">';
+						content += '<div class="label-info block-inline add-margin-4">';
+						content += '<span>เพิ่มเติม</span>';
+						content += '</div>';
+						content += '<div class="input-info block-inline add-margin-4">';
+						content += '<input type="text" value="" name="update_txt-info-'+update_num_option+'" id="update_txt-info-'+update_num_option+'" class="update_id_txt-info"  />';
+						content += '<input type="hidden" value="new" name="update_id_txt-info-'+update_num_option+'"  id="update_id_txt-info-'+update_num_option+'"  />';
+						content += '</div>';
+						content += '<div class="bubble block-inline ">';
+						content += '<div class="talktext">';
+						content += '<a href="#"  class="delete-butt" id="update_delete-'+update_num_option+'">ลบ</a>';
+						content += '</div>';
+						content += '</div>';
+						content += '</div>';
+						$('#update_package-more-info').append(content);
+				
+						$('#update_txt-info-'+update_num_option).textinput().textinput('refresh', true);
+						
+						$('.update-content').animate({
+								scrollTop: $('.update-content').get(0).scrollHeight
+						}, 500);
+						$('.update_delete-butt').click(function(){
+								var did = $(this).attr("id");
+								var id = did.split("-");
+								$('#update_package-info-'+id[1]).remove();
+						});
+							
+												
+						}
+				
+					
+						
+				});
+				$('.update_delete-butt').click(function(){
+						var did = $(this).attr("id");
+						var id = did.split("-");
+						$('#update_package-info-'+id[1]).remove();
+				});
+				
+				$('#update_package_page').validate({
+							rules: {
+							member_name: "required",
+							price: "required",
+							expireddate : "required"
+							},
+							submitHandler: function(form) {
+								//ajax_add_package();
+								update_ajax_add_package();
+							/*	$("#member_name").val("");
+								$("#price").val("");
+								$("#expireddate").val("");*/
+							}
+				});
+				function update_ajax_add_package(){
+				var action = "UPDATE_METHOD";
+				var restaurant_id = 1;
+					var member_name =$('#update_member_name').val();
+					var member_price = $("#update_price").val();
+					var member_expireddate =$("#update_expireddate").val();
+					var array_package_product_id = new Array();
+					var array_package = new Array();
+					var array_product = new Array();
+					var array_number = new Array();
+					var array_package_option = new Array();
+					var array_package_option_id = new Array();
+					var index = 0;
+					var P = 0;
+						var update_lastid = $("#update_add-package").children().last().attr("id");
+						P = update_lastid.split("-");
+						P = P[2];
+					 for(var j = 1 ; j<= P ; j++){
+							if($('#update_ddl-cat-'+j).val() != "standard"){
+								if($('#update_ddl-item-'+j).val()!= "standard"){
+									
+									if($("#update_ddl-quantity-"+j).val()!= "null"){
+										array_package[j-1]= $('#update_ddl-cat-'+j).val();
+										array_product[j-1]=$('#update_ddl-item-'+j).val();
+										array_number[j-1]=$("#update_ddl-quantity-"+j).val();
+										array_package_product_id[j-1] = $("#update_package_product-"+j).val();
+										
+									}
+								}
+							}	
+					 }
+					$('#update_ddl-quantity-'+update_num).textinput().textinput('refresh', true);
+					var O =0;
+					var update_lastid = $('#update_package-more-info').children().last().attr("id");
+							
+						O = update_lastid.split("-");
+						
+						O = O[2];
+					//alert(O);
+					 for(var z = 1 ; z<= O ; z++){
+							if($('#update_txt-info-'+z).val() != ""){
+								 array_package_option[z-1] = $('#update_txt-info-'+z).val();
+								 array_package_option_id[z-1] = $('#update_id_txt-info-'+z).val();
+							}
+					}
+					 var package_product_id = JSON.stringify(array_package_product_id);
+					 var package_serialize = JSON.stringify(array_package);
+					 var product_serialize = JSON.stringify(array_product);
+					 var number_serialize = JSON.stringify(array_number);
+					 var package_option_serialize = JSON.stringify(array_package_option);
+					 var package_option_id_serialize = JSON.stringify( array_package_option_id);
+				/*	 alert("package_product_id "+package_product_id);	
+					 alert("package_serialize "+package_serialize);		
+					 alert("product_serialize "+product_serialize);
+					 alert("number_serialize "+number_serialize);
+					 alert("package_option_id_serialize "+package_option_id_serialize);
+					 alert("package_option_serialize "+package_option_serialize);*/
+			
+						$.ajax({
+						type: "POST",
+						url: "http://"+Global_url+"/memberws/restaurant2/package/11",
+						cache: false,
+						dataType: "json",
+						data: "action="+action+ "&name=" + member_name + "&price=" +member_price 
+						+ "&expireddate=" +  member_expireddate+ "&restaurant_id=" +  restaurant_id+"&product_name="+ product_serialize
+						+ "&number="+number_serialize + "&package_option_name=" + package_option_serialize + "&product_cat=" + package_serialize
+						+ "&package_id=" + Global_id+"&package_option_id_serialize="+package_option_id_serialize+"&package_product_id="+package_product_id,
+						success: function(data){
+					
+							if(data['code'] == 2){
+							
+							alert(data['status']+" :"+data['action']);
+							}else{
+								
+							alert(data['status']+" :"+data['action']);
+								setTimeout(function(){ 
+										$.mobile.navigate("#package_list", { transition: "fade"});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+										//$.mobile.defaultPageTransition = 'fade'
+						
+										},50);
+							}
+						}
+						});
+				}
+				
+				
+				$('#update_radio-choice-2').click(function(){
+					$("#update_expireddate").val ("");	
+					if($("#update_start-date").val()&& $("#update_end-date").val()){
+					$("#update_expireddate").val(""+$("#update_start-date").val()+"-"+$("#update_end-date").val());
+					}else{
+					alert("Please select Date");
+					}
+				});
+				$('#update_radio-choice-1').click(function(){
+					$("#update_expireddate").val ("");	
+					var temp_value = $( "#update_package-input-date1" ).val();
+					$("#update_expireddate").val(temp_value);
+				});
+				
+				$('#update_package-input-date1').on('change', function() {
+					if($('#update_radio-choice-1').is(':checked')){
+					var temp_value =$( "#update_package-input-date1" ).val();
+					$("#update_expireddate").val(temp_value);
+					}
+				});
+				
+				$('#update_start-date').on('change', function() {
+					if( $("#update_start-date").val()&& $("#update_end-date").val() && $('#update_radio-choice-2').is(':checked')){
+					$("#update_expireddate").val(""+$("#update_start-date").val()+"-"+$("#update_end-date").val());
+					}
+				});
+				
+				$('#update_end-date').on('change', function() {
+					if($("#update_start-date").val()&& $("#update_end-date").val() && $('#update_radio-choice-2').is(':checked')){
+					$("#update_expireddate").val(""+$("#update_start-date").val()+"-"+$("#update_end-date").val());
+					}
+				});
+				
+				$( "#update_start-date" ).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							   changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100',
+							 onSelect: function(dateStr) {
+									$('#update_end-date').datepicker('option', 'minDate', $(this).datepicker('getDate') || 0);
+										if( $("#update_start-date").val()&& $("#update_end-date").val() && $('#update_radio-choice-2').is(':checked')){
+										$("#update_expireddate").val(""+$("#update_start-date").val()+"-"+$("#update_end-date").val());
+										}
+									}
+							 
+				});
+				$( "#update_end-date" ).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							   changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100',
+							 onSelect: function(dateStr) {
+										$('#update_start-date').datepicker('option', 'maxDate', $(this).datepicker('getDate'));
+											if($("#start-date").val()&& $("#update_end-date").val() && $('#update_radio-choice-2').is(':checked')){
+											$("#update_expireddate").val(""+$("#update_start-date").val()+"-"+$("#update_end-date").val());
+											}
+										}
+				});
+				$('#update_flip-1').flipswitch().flipswitch('refresh', true);
+				
+				//$('.ddl-group').selectmenu().selectmenu('refresh', true);
+				/*$('.ddl-item').selectmenu().selectmenu('refresh', true);
+				$('.update_ddl-quantity').textinput().textinput('refresh', true); */
+			});
+			
+			
+			
+		</script>	
+				<div data-role="content"  class="scrollable ui-content scroll-list update-content">
+				<form id="update_package_page" >
+					<div class="align-right">
+						<select name="update_flip-1" id="update_flip-1"  data-role="slider" data-mini="true" >
+							<option value="off">Inactive</option>
+							<option value="on">Active</option>
+						</select> 
+					</div>
+					<div class="clear-block"></div>	
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="member_name">เมมเบอร์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="update_member_name" id="update_member_name"  value="" class="ui-submit" />
+						</div>
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="price">ราคา</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="update_price" id='update_price' value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="expireddate">หมดอายุ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="update_expireddate" id='update_expireddate' value="" readonly="readonly"  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-right button-package">
+					
+						<div  class="package-input package-input-calendar" >
+						
+								<div class="carlendar">
+									<input type="radio" name="update_radio-choice" id="update_radio-choice-2" value="choice-2">
+									<input type="text" name="update_start-date" id="update_start-date" class="ui-submit" readonly />
+								 </div>
+								<span class="dash">-</span>
+								 <div class="carlendar"> 
+									<input type="text"  name="update_end-date" id="update_end-date"class="ui-submit" readonly />
+								</div>
+							
+						</div>
+					
+						<div class="package-input package-input-date" >
+							  <input type="radio" name="update_radio-choice" id="update_radio-choice-1" value="choice-1" >
+							  <select name="update_select-choice-1" id="update_package-input-date1">
+								<option value="standard">เดือน</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+							  </select>
+						
+						</div>
+		
+					</div>
+					<div class="clear-block"></div>
+					<div class="add-package" id="update_add-package">
+						<div class="ui-grid-b" id="update_add-package-1">
+							<div class="ui-block-a">
+								 <select  class="update_ddl-group" name="update_ddl-cat-1" id="update_ddl-cat-1" >
+									<option value="standard">เลือกกลุ่มสินค้า</option>
+								  </select>
+							</div>
+							<div class="ui-block-b">
+								 <select class="update_ddl-item" name="update_ddl-item-1" id="update_ddl-item-1" >
+									<option value="standard">เลือกสินค้า</option>
+								
+								  </select>
+							</div>
+							<div class="ui-block-c">
+											<input type="number" name="update_ddl-quantity-1" id="update_ddl-quantity-1"  min="1" max="6" value="1" class="update-ddl-quantity" />	
+							</div>
+								<input type="hidden" value="new" name="update_package_product-1" id="update_package_product-1" />	
+						</div><!-- /grid-b -->
+					
+					</div>
+					<div class="content-topbutton align-right">
+							<a class="ui-btn" id="update_add-button-product">เพิ่มรายการ</a>
+					</div>
+				
+					<div data-role="fieldcontain" id="update_package-more-info">
+						<div id="update_package-info-1" class="package-info">
+							<div class="label-info block-inline">
+								<span>เพิ่มเติม</span>
+							</div>
+							
+							<div class="input-info block-inline">
+								<input type="text"  value="" id="update_txt-info-1" name="update_txt-info-1"/>
+								<input type="hidden" value="new" name="update_id_txt-info-1" id="update_id_txt-info-1" class="update_id_txt-info"  />
+							</div>
+
+							<div class="bubble block-inline">
+								<div class="talktext">
+									<a href="#" class="update_delete-butt" id="update_delete-1">ลบ</a>
+								 </div>
+							</div>
+						</div>
+					</div>
+					<div class="content-topbutton align-right ">
+							<a class="ui-btn" id="update_add-info" >เพิ่มรายการ</a>
+					</div>
+					
+					<div data-role="fieldcontain" class="txt-note">
+						<textarea name="update_textarea" id="update_textarea" placeholder="NOTE"></textarea>
+					</div>
+					
+					
+					
+					<div class="ui-grid-a  mb-content-middle content-login">
+					
+					  <div class="ui-block-a custom-block-a">
+						<button id="update_login" class="ui-btn">กลับหน้าหลัก</button>
+					  </div>
+					  <div class="ui-block-b custom-block-b">
+						<button class="ui-btn" id="update_btn_add_package" type="submit">บันทึก</button>
+					  </div>
+					  
+					</div>
+					
+				</form>	
+					
+				</div>
+				
+		
+		</div>
+
+		
+		<script type="text/javascript" src="../js/index.js"></script>
+		<script type="text/javascript" src="../js/menubar.js"></script>
+	</div>
+			
+	
+    </body>
+</html>

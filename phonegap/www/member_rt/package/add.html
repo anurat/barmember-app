@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	   <meta charset="utf-8" />
+        <!--<meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />-->
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=10, user-scalable=no">
+        <title>MEMBER DEMO APP</title>
+		
+		<!-- JS -->
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="../../js/jquery.mobile-1.4.2.min.js"></script>
+		<script src="../../js/script.js"></script>
+		
+		<!-- CSS -->
+
+		<link rel="stylesheet" href="../../css/jquery.mobile-1.4.2.css" />
+		<link rel="stylesheet" href="../../css/jquery.mobile-1.4.2.min.css" />
+		<link rel="stylesheet" href="../../css/styles.css" />
+    </head>
+    <body>
+		<div id="container">
+		<div data-role="page" id="page_add_user" >
+				
+				<div data-role="content"  class="scrollable ui-content scroll-list">
+					<div class="align-right">
+						<select name="flip-1" id="flip-1"  data-role="slider" data-mini="true" >
+							<option value="off">Inactive</option>
+							<option value="on">Active</option>
+						</select> 
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="user_id">เมมเบอร์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="user_id" id="user_id" value="" class="ui-submit" onfocus="this.style.bakgroundColor='red'" onblur="this.style.bakgroundColor='white'"/>
+						</div>
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="username">ราคา</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="username" id='username' value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="username">หมดอายุ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="username" id='username' value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="mb-content-right button-package">
+						<div  class="package-input package-input-calendar" >
+								<div class="carlendar">
+									<input type="radio" name="radio-choice" id="radio-choice-2" value="choice-2">
+									<input type="text"  class="date" />
+								 </div>
+								<span class="dash">-</span>
+								 <div class="carlendar">
+						
+									<input type="text" class="date" />
+								</div>
+						</div>
+					
+						<div class="package-input package-input-date" >
+							  <input type="radio" name="radio-choice" id="radio-choice-1" value="choice-1" checked="checked">
+							  <select name="select-choice-1" id="package-input-date1"  >
+								<option value="standard">เดือน</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+							  </select>
+						
+						</div>
+					</div>
+					<div class="clear-block"></div>
+					<div class="add-package" id="add-package">
+						<div class="ui-grid-b" id="add-package-1">
+							<div class="ui-block-a">
+								 <select name="ddl-cat-1" id="ddl-cat-1">
+									<option value="standard">เลือกกลุ่มสินค้า</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+								  </select>
+							</div>
+							<div class="ui-block-b">
+								 <select name="ddl-item-1" id="ddl-item-1">
+									<option value="standard">Black label</option>
+									<option value="1"></option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+								  </select>
+							</div>
+							<div class="ui-block-c">
+								 <select name="ddl-amount-1" id="ddl-amount-1">
+									<option value="standard">จำนวน</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+								  </select>
+							</div>
+						</div><!-- /grid-b -->
+					</div>
+					<div class="content-topbutton align-right">
+							<button class="ui-btn" id="add-button">เพิ่มรายการ</button>
+					</div>
+				
+					<div data-role="fieldcontain" id="package-more-info">
+						<div id="package-info-1" class="package-info">
+							<div class="label-info block-inline">
+								<span>เพิ่มเติม</span>
+							</div>
+							
+							<div class="input-info block-inline">
+								<input type="text"  name="txt-info-1"/>
+							</div>
+
+							<div class="bubble block-inline">
+								<div class="talktext">
+									<a href="#" class="delete-butt" id="delete-1">ลบ</a>
+								 </div>
+							</div>
+						</div>
+					</div>
+					<div class="content-topbutton align-right ">
+							<button class="ui-btn" id="add-info" >เพิ่มเติม</button>
+					</div>
+					
+					<div data-role="fieldcontain" class="txt-note">
+						<textarea name="textarea" id="textarea" placeholder="NOTE"></textarea>
+					</div>
+					
+					
+					
+					<div class="ui-grid-a  mb-content-middle content-login">
+					
+					  <div class="ui-block-a custom-block-a">
+						<button id="login" class="ui-btn">กลับหน้าหลัก</button>
+					  </div>
+					  <div class="ui-block-b custom-block-b">
+						<button class="ui-btn">บันทึก</button>
+					  </div>
+					  
+					</div>
+					
+					
+					
+				</div>
+				
+		<!--<script type="text/javascript" src="../../cordova.js"></script>-->
+		<script type="text/javascript" src="../../js/index.js"></script>
+		<script type="text/javascript" src="../../js/menubar.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#add-button').click(function(){
+						var lastid = $("#add-package").children().last().attr("id");
+						if(lastid == undefined)
+						{
+							num = 1;
+						}
+						else
+						{
+							num = lastid.split("-");
+							num = parseInt(num[2])+1;						
+						}
+	
+						var content = '<div class="ui-grid-b" id="add-package-'+num+'">';
+						content += '<div class="ui-block-a">';
+						content += '<select name="ddl-cat-'+num+'" id="ddl-cat-'+num+'">';
+						content += '<option value="standard">เลือกกลุ่มสินค้า</option>';
+						content += '</select>';
+						content += '</div>';
+						content += '<div class="ui-block-b">';
+						content += '<select name="ddl-item-'+num+'" id="ddl-item-'+num+'">';
+						content += '<option value="standard">Black label</option>';
+						content += '</select>';
+						content += '</div>';
+						content += '<div class="ui-block-c">';
+						content += '<select name="ddl-amount-'+num+'" id="ddl-amount-'+num+'">';
+						content += '<option value="standard">จำนวน</option>';
+						content += '</select>';
+						content += '</div>';
+						content += '</div>';
+						$('.add-package').append(content);
+			
+						$('#ddl-cat-'+num).selectmenu().selectmenu('refresh', true);
+						$('#ddl-item-'+num).selectmenu().selectmenu('refresh', true);
+						$('#ddl-amount-'+num).selectmenu().selectmenu('refresh', true);
+						
+				});
+				
+				$('#add-info').click(function(){
+						var lastid = $('#package-more-info').children().last().attr("id");
+						if(lastid == undefined)
+						{
+							num = 1;
+						}
+						else
+						{
+							num = lastid.split("-");
+							num = parseInt(num[2])+1;						
+						}
+						
+					
+						var content = '<div id="package-info-'+num+'" class="package-info">';
+						content += '<div class="label-info block-inline add-margin-4">';
+						content += '<span>เพิ่มเติม</span>';
+						content += '</div>';
+						content += '<div class="input-info block-inline add-margin-4">';
+						content += '<input type="text" name="txt-info-'+num+'" id="txt-info-'+num+'"  />';
+						content += '</div>';
+						content += '<div class="bubble block-inline ">';
+						content += '<div class="talktext">';
+						content += '<a href="#"  class="delete-butt" id="delete-'+num+'">ลบ</a>';
+						content += '</div>';
+						content += '</div>';
+						content += '</div>';
+						$('#package-more-info').append(content);
+				
+						$('#txt-info-'+num).textinput().textinput('refresh', true);
+						$('.ui-content').animate({
+								scrollTop: $('.ui-content').get(0).scrollHeight
+						}, 1500);
+						$('.delete-butt').click(function(){
+								var did = $(this).attr("id");
+								var id = did.split("-");
+								$('#package-info-'+id[1]).remove();
+						});
+				});
+				$('.delete-butt').click(function(){
+						var did = $(this).attr("id");
+						var id = did.split("-");
+						$('#package-info-'+id[1]).remove();
+				});
+				
+									
+			});
+		</script>
+			</div>
+		</div>
+        
+    </body>
+</html>

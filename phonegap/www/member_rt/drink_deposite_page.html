@@ -1,0 +1,1858 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="target-densitydpi=medium-dpi, user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />
+	   	<meta http-equiv=Content-Type content=text/html;charset=iso-8859-1 />
+		
+        <title>drink_deposite</title>
+		
+				
+		<!-- JS -->
+		<script src="../js/jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="../cordova.js"></script>
+		<script src="../js/script.js"></script>
+		<script src="../js/jquery.mobile-1.4.3.min.js"></script>
+		<script src="../js/jquery-ui-1.10.3.custom.min.js"></script>
+		<script src="../js/jquery.validate.min.js"></script>
+		<script src="../js/footable.js"></script>	
+		<script src="../js/footable.sort.js" ></script>
+
+		
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<link rel="stylesheet" href="../css/jquery.mobile-1.4.3.css" />
+		<link rel="stylesheet" href="../css/styles.css" />
+		<link rel="stylesheet" href="../css/jquery-ui-1.10.3.custom.min.css"/>
+		<link href="../css/footable.core.min.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript">
+			//***************************************page_add_drink_deposite******************************************************//
+			/*	$(document).on("pagebeforehide","#page_add_drink_deposite",function(){ // When leaving pagetwo
+			
+				});
+				
+				$(document).on("pagebeforeshow","#page_add_drink_deposite",function(){ // When entering page add
+				alert(Global_customer_id);	
+					
+				});
+
+				$(document).one( 'pagecreate',"#page_list_drink_deposite",function(event){	
+				var pictureSource;   
+					var destinationType; 
+					document.addEventListener("deviceready",onDeviceReady,false);
+					function onDeviceReady() 
+					{
+						pictureSource=navigator.camera.PictureSourceType;
+						destinationType=navigator.camera.DestinationType;
+					}
+					function onPhotoURISuccess(imageURI) 
+					{	
+						alert(imageURI);
+						console.log(imageURI);
+						var largeImage = document.getElementById('largeImage-1');
+						largeImage.style.display = 'block';
+						largeImage.src = imageURI;
+					}
+					function onPhotoDataSuccess(imageURI) 
+					{ 
+						//alert(imageURI);
+						var imgProfile = document.getElementById('largeImage-1');
+						imgProfile.src =  imageURI;
+						if(sessionStorage.isprofileimage==1)
+						{
+							getLocation();
+						}
+						movePic(imageURI);
+					}
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+
+					function movePic(file)
+					{ 
+						window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError); 
+					} 
+
+					function resolveOnSuccess(entry)
+					{ 
+						var d = new Date();
+						var n = d.getTime();
+						var newFileName = n + ".jpg";
+						var myFolderApp = "MyAppFolder";
+						window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) 
+						{      
+							
+							fileSys.root.getDirectory( myFolderApp,
+							{create:true, exclusive: false},
+							function(directory) 
+							{
+								entry.moveTo(directory, newFileName,  successMove, resOnError);
+							},
+							resOnError);
+						},
+						resOnError);
+					}
+
+					function successMove(entry) 
+					{
+						sessionStorage.setItem('imagepath', entry.fullPath);
+					}
+					function resOnError(error) 
+					{
+						alert("resOnError "+error.code);
+					}
+					function capturePhoto() 
+					{
+						navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+						destinationType: Camera.DestinationType.FILE_URI,
+						correctOrientation: true	});
+					}
+
+					function getPhoto(source) 
+					{
+						navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+						destinationType: destinationType.FILE_URI,
+						correctOrientation: true,
+						sourceType: source });
+					}
+
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+					/*****************************End of media Section******************************/
+					/******************All Functions handle with date expired************************/
+				/*	$('#deposite_radio_calendar-1').click(function(){
+						$("#drink_expireddate-1").val ("");	
+						$("#drink_expireddate-1").val(""+$("#deposite_expire_date-1").val());
+					}); // done  choose radio type calendar
+					
+					$('#deposite_radio_select-1').click(function(){
+						$("#drink_expireddate-1").val ("");	
+						var temp_value = $( "#deposite_select_date-1" ).val();
+						$("#drink_expireddate-1").val(temp_value);
+					});// done  choose radio type select
+					
+					
+					$('#deposite_select_date-1').on('change', function() {
+						if($('#deposite_radio_select-1').is(':checked')){
+						var temp_value =$( "#deposite_select_date-1" ).val();
+						$("#drink_expireddate-1").val(temp_value);
+						}
+					});
+				
+					$('#deposite_expire_date-1').on('change', function() {
+						if( $("#deposite_expire_date-1").val() && $('#deposite_radio_calendar-1').is(':checked')){
+						$("#drink_expireddate-1").val(""+$("#deposite_expire_date-1").val());
+						}
+					});
+					/******************End Functions handle with date expired************************/
+					
+					
+					/*$('#delete_deposite-1').click(function(){
+						var did = $(this).attr("id");
+						var id = did.split("-");
+						
+						$('#deposite_name-'+id[1]).remove();
+					});
+					$( "#deposite_expire_date-1" ).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							   changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100'
+					});		
+					
+					$("#take-photo-1").click(function(){
+					capturePhoto()
+					});
+					
+				
+				
+				
+				});*/
+			
+
+//*************************************** END page_Add_drink_deposite*****************************************************//
+			//***************************************page_list_drink_deposite*****************************************************//
+				$(document).on("pagebeforehide","#page_list_drink_deposite",function(){ // When leaving pagetwo
+					//alert("page package_list is about to be hidden");
+					$('#CustomerBody').empty(); 
+				});
+
+					
+				// Store object
+				var storeObject = {
+					cus_id : '',
+				}
+				$(document).on("pagebeforeshow","#page_list_drink_deposite",function(){ // When entering page list
+						// get list of user to table
+						jqmReady.resolve();
+						var restaurant_id = 1;
+						$.ajax({
+						type: "GET",
+						url: "http://"+Global_url+"/memberws/restaurant2/get_deposite_drink/11/"+restaurant_id,
+						cache: false,
+						dataType: "json",
+						success: function(data){
+						
+							if(data['code'] == 2){
+				
+				
+							}else{
+								var obj = JSON.parse(JSON.stringify(data));
+								drawTable(obj);				
+							}
+						}
+						});
+						
+				});
+				
+				$(document).on( 'pagecreate',"#page_list_drink_deposite",function(event){	
+						
+						sessionStorage.clear();
+/*
+						$('#bars-button').click(function() {
+									alert("panel1");
+									$.mobile.activePage.find('.header-menu:visible').panel("open");
+						});
+						*/
+						$('.footable').footable();
+						//search key
+						$('#deposit_search').keyup(function() {
+							var searchVal = $(this).val();
+							if(searchVal != '') {
+								$.ajax({
+								type: "GET",
+								url: "http://"+Global_url+"/memberws/restaurant2/search_deposite_drink/11/1/"+searchVal,
+								cache: false,
+								dataType: "json",
+								success: function(data){
+									$('#CustomerBody').empty();
+									if(data['code'] == 2){
+										
+					
+									}else{
+										var obj = JSON.parse(JSON.stringify(data));
+										drawTable(obj);
+									}	
+								}
+								});
+			    
+							} else {
+								$.ajax({
+									type: "GET",
+									url: "http://"+Global_url+"/memberws/restaurant2/get_deposite_drink/11/1",
+									cache: false,
+									dataType: "json",
+									success: function(data){
+										$('#CustomerBody').empty();
+										if(data['code'] == 2){
+				
+				
+										}else{
+										var obj = JSON.parse(JSON.stringify(data));
+										drawTable(obj);				
+										}
+									}
+								});
+							}
+						});
+				
+					
+					/*$('#btn_add_user').click(function() {
+						setTimeout(function(){ 
+		
+						$.mobile.navigate("./customer_page.html#page_add_user", { transition: "fade" });
+							//$.mobile.pageContainer.pagecontainer("change", "#page_add_drink_deposite");
+							//$.mobile.defaultPageTransition = 'fade'
+						},50);	
+					});*/
+					$('.ui-input-clear').click(function() {
+						var restaurant_id = 1;
+						$.ajax({
+						type: "GET",
+						url: "http://"+Global_url+"/memberws/restaurant2/get_deposite_drink/11/"+restaurant_id,
+						cache: false,
+						dataType: "json",
+						success: function(data){
+							$('#CustomerBody').empty();
+							if(data['code'] == 2){
+				
+				
+							}else{
+								var obj = JSON.parse(JSON.stringify(data));
+								drawTable(obj);				
+							}
+						}
+						});
+				
+					});
+				});	
+					function drawTable_select_search(data) {
+						//$("#CustomerTable").append("<tbody>");
+						for (var i = 0; i < data.length; i++) {
+							drawRow_select_search(data[i]);
+						}
+						//$("#CustomerTable").append("</tbody>");
+					}
+					function drawRow_select_search(rowData) {			
+						var row = "<tr id='select_search_row-"+ rowData.customer_id+"' >";
+						row += "<td>" + rowData.user_id + "</td>";
+						row += "<td>" + rowData.customer_name + "</td>";
+						if(rowData.packages == null){
+						rowData.packages = "-";
+						}
+						row += "<td>" + rowData.packages + "</td>";
+						row += "<td>" + rowData.customer_phone + "</td>";
+						
+						$("#CustomerBody").append(row);
+						
+						$('#select_search_row-'+ rowData.customer_id).click(function(){	
+								
+								storeObject.cus_id = rowData.customer_id;
+								//sessionStorage.clear();
+								//sessionStorage.setItem("session_customer", rowData.customer_id);
+								setTimeout(function(){ 
+									$.mobile.navigate("#page_edit_deposite_page", { transition: "fade" 	});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_drink_deposite");
+										//$.mobile.defaultPageTransition = 'fade'
+						
+								},50);
+						});
+						
+						
+					}
+					function drawTable_search(data) {
+						//$("#CustomerTable").append("<tbody>");
+						for (var i = 0; i < data.length; i++) {
+							drawRow_search(data[i]);
+						}
+						//$("#CustomerTable").append("</tbody>");
+					}
+
+					function drawRow_search(rowData) {			
+						var row = "<tr id='search_row-"+ rowData.customer_id+"' >";
+						row += "<td>" + rowData.user_id + "</td>";
+						row += "<td>" + rowData.customer_name + "</td>";
+						if(rowData.packages == null){
+						rowData.packages = "-";
+						}
+						row += "<td>" + rowData.packages + "</td>";
+						row += "<td>" + rowData.customer_phone + "</td>";
+						
+						$("#CustomerBody").append(row);
+
+						$('#search_row-'+ rowData.customer_id).click(function(){	
+								storeObject.cus_id = rowData.customer_id;
+								setTimeout(function(){ 
+									$.mobile.navigate("#page_edit_deposite_page", { transition: "fade" 	});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_drink_deposite");
+										//$.mobile.defaultPageTransition = 'fade'
+						
+								},50);
+						});
+						
+						
+					}
+		
+					function drawTable(data) {
+						//$("#CustomerTable").append("<tbody>");
+						
+						for (var i = 0; i < data.length; i++) {
+							//alert("data.length"+data[i].customer_name);
+							drawRow(data[i]);
+						}
+						//$("#CustomerTable").append("</tbody>");
+					}
+
+					function drawRow(rowData) {
+						var temp_string = '';
+					/*
+						var row = $("<tr id='row-"+ rowData.user_id+"' ><tr />");
+						////this will append tr element to table... keep its reference for a while since we will add cels into it
+						row.append("<td>" + rowData.user_id + "</td>");
+						row.append("<td class='td-name'>" + rowData.customer_name + "</td>");
+
+						if( 0 < rowData.packages.length ){
+							for(var j = 0 ; j < rowData.packages.length ; j++){
+								temp_string +=rowData.packages[j].package_name+" ";
+							}
+						}else {
+							temp_string = "-";	
+						}
+						row.append("<td>" + temp_string + "</td>");
+						row.append("<td>" + rowData.customer_phone + "</td>");
+						//$("#CustomerBody").append(row); 
+						*/
+						//console.log(rowData.user_id);
+						
+						var row = "<tr class ='row-"+ rowData.customer_drink_deposites_id+"' id='row-"+ rowData.customer_id+"' >";
+						row += "<td>" + rowData.user_id + "</td>";
+						row += "<td>" + rowData.username + "</td>";
+						/*if( 0 < rowData.packages.length ){
+							for(var j = 0 ; j < rowData.packages.length ; j++){
+								//alert(rowData.packages.length);
+								temp_string +=rowData.packages[j].package_name+" ";
+							}
+						}else {
+							temp_string = "-";	
+						}*/
+						row += "<td>" + rowData.drink_name + "</td>";
+						if(rowData.valid_deposite == 0 ){
+						row += "<td>" + rowData.expire_date + "</td>";
+						}else if(rowData.expire_date == 0){
+						row += "<td>" + rowData.valid_deposite + "</td>";
+						}else{
+						row += "<td> - </td>";
+						}
+						$("#CustomerBody").append(row);
+						
+						$('.row-'+ rowData.customer_drink_deposites_id).click(function(){	
+								storeObject.cus_id = rowData.customer_id;
+								setTimeout(function(){ 
+									$.mobile.navigate("#page_edit_deposite_page", { transition: "fade" 	});
+										//$.mobile.pageContainer.pagecontainer("change", "#page_add_drink_deposite");
+										//$.mobile.defaultPageTransition = 'fade'
+						
+								},50);
+						});
+					}
+					
+			//***************************** END page_list_deposite_page *******************************//	
+			
+	
+			//*****************************Start page_edit_deposite_page *******************************//
+					
+					$(document).on("pagebeforehide","#page_edit_deposite_page",function(){ // When entering page add
+					//alert("page_update_package is about to be shown");
+						$('#deposite_name').empty();
+					
+						$('#page_edit_deposite_page').page('destroy').page();
+					});
+					var global_deposite_num=1;
+					var drink_deposite_customer_id = "" ;
+					var customer_id ="" ;
+					$(document).on('pagebeforeshow', '#page_edit_deposite_page', function(){     
+						alert('My Id is ' + storeObject.cus_id);
+						$("#page_edit_dialog_delete").hide();
+						alert("sessionStorag "+sessionStorage.getItem("session_customer"));
+						if(sessionStorage.getItem("session_customer") == null || sessionStorage.getItem("session_customer") ==  ''){
+						 customer_id = storeObject.cus_id;
+						}else {
+						 customer_id = sessionStorage.getItem("session_customer");
+						}
+						
+						drink_deposite_customer_id = customer_id;
+		
+						$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/customers2/customer/11/"+ customer_id,
+							cache: false,
+							dataType: "json",
+							success: function(data){
+								if(data['code'] == 2){
+
+								}else{
+									var obj = JSON.parse(JSON.stringify(data));
+									console.log(obj);
+									var myDate = new Date(1000* obj.birthday);
+									console.log(myDate.toString());
+									console.log(myDate.toLocaleDateString());
+									console.log(myDate.toUTCString());
+									$("#txt_user_id").val(obj.user_id);
+									$("#txt_username").val(obj.name);
+		 							$("#txt_phone_number").val(obj.phone);
+									$("#txt_brithday").val(myDate.toLocaleDateString());
+									$("#txt_email").val(obj.email);
+									$("#txt_type").val(obj.note);
+									if(obj.user_img_path != null){
+										var imgurl = "http://"+Global_url+"/memberws"+obj.user_img_path;
+										$("#page_edit_deposite_largeImage").load(imgurl, function(response, status, xhr) {
+											if (status == "error") {
+												alert("User Image Not Found");
+												$(this).attr('src', '../img/logo.jpg');
+											}
+											else{
+												//alert("Image  Found");
+												$(this).attr('src', imgurl);
+											}
+										});
+									}else{
+										$("#page_edit_deposite_largeImage").attr('src', '../img/logo.jpg');
+									}
+								}
+							}
+						 });
+						 //get deposite
+						 
+						$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/restaurant2/get_deposit_drink_by_id/11/1/"+customer_id,
+							cache: false,
+							dataType: "json",
+							success: function(data){
+								if(data['code'] == 2){
+
+								}else{
+								var obj_drink_deposite  ="";
+								 obj_drink_deposite = JSON.parse(JSON.stringify(data));
+									
+								if(obj_drink_deposite.length != 0){
+								$("#deposite_name").empty();
+								}	
+								for(var deposite_num =0 ; deposite_num < obj_drink_deposite.length ; deposite_num++ ){
+								
+								var content = '<div class="mem-wrap" id="deposite_name-'+deposite_num+'">';
+								content	 +='<div id="deposite_header-'+deposite_num+'" class="mem-header">';
+								content  +='<div class="ui-grid-a my-breakpoint">';
+								content  +='<div class="ui-block-a mem-panel">';
+								content  +='<label>#'+deposite_num+'</label>';
+								content  +='</div>';
+								content  +='<div class="ui-block-b">';
+								content  +='<div class="bubble block-inline">';
+							    content  +='<div class="talktext">';
+								content  +='<a class="delete-deposite-btn" onClick="delete_deposit('+obj_drink_deposite[deposite_num].customer_drink_deposites_id+','+deposite_num+')"  id="delete_deposite-'+deposite_num+'"  href="#"> ลบ</a>';
+								content  +='</div></div></div></div></div>';
+								content  +='<div class="deposite_detail">';
+								content  +='<div class="deposite-image">';
+								content  +=	'<div class="">';
+								content  +=	'<img src="../img/logo.jpg" alt="log" class="preview-image" id="DepositImage-'+deposite_num+'"/></br>';
+								content  +=	'</div>';		
+								content  +=	'</div>';
+								content  +=	'<div class="deposite_content">';
+								content  +=	'<div class="ui-grid-a">';
+								content  +=	'<div class="mb-content-middle">';
+								content  +=	'<div class="middle-block block-a" >';
+								content  +=	'<span for="drink_name">ชื่อเหล้า</span>';
+								content  +=	'</div>';
+								content  +=	'<div class="middle-block block-b" >';
+								content  +=	'<input type="text" name="drink_name-'+deposite_num+'" id="drink_name-'+deposite_num+'"  value="'+obj_drink_deposite[deposite_num].drink_name+'" class="ui-submit" />';
+								content  +=	'</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '<div class="mem-outdate">';
+								content  += '<div class="ui-grid-a">';
+								content  += '<div class="mb-content-middle">';
+								content  += '<div class="middle-block block-a" >';
+								content  += '<span for="drink_expireddate">หมดอายุ</span>';
+								content  += '</div>';
+								content  += '<div class="middle-block block-b " >';
+								if(obj_drink_deposite[deposite_num].expire_date != 0){
+								content  +=	'<input type="text" name="drink_expireddate-'+deposite_num+'" id="drink_expireddate-'+deposite_num+'" value="'+obj_drink_deposite[deposite_num].expire_date+'" class="ui-submit" />';
+								}
+								else{
+								content  +=	'<input type="text" name="drink_expireddate-'+deposite_num+'" id="drink_expireddate-'+deposite_num+'" value="'+obj_drink_deposite[deposite_num].valid_deposite+'" class="ui-submit" />';
+								}
+								
+								content  += '</div>';
+								content  += '</div>';
+							/*	content  += '<div class="mb-content-left-deposite button-package">';
+								content  += '<div  class="package-input package-input-calendar" >';
+								content  += '<div class="carlendar">';
+								content  += '<input type="radio" name="radio-choice_'+deposite_num+'" id="deposite_radio_calendar-'+deposite_num+'" value="choice-2">';
+								content  += '<input type="text" name="deposite_expire_date-'+deposite_num+'" id="deposite_expire_date-'+deposite_num+'" class="ui-submit" readonly />';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '<div  class="package-input package-input-date" >';
+								content  += '<input type="radio" name="radio-choice_'+deposite_num+'" id="deposite_radio_select-'+deposite_num+'" value="choice-1" >';
+								content  += '<select class="custom-select" name="deposite_select_date-'+deposite_num+'" id="deposite_select_date-'+deposite_num+'">';
+								content  += '<option value="standard">เดือน</option>';
+								content  += '<option value="1">1</option>';
+								content  += '<option value="2">2</option>';
+								content  += '<option value="3">3</option>';
+								content  += '<option value="4">4</option>';
+								content  += '<option value="5">5</option>';
+								content  += '<option value="6">6</option>';
+								content  += '</select>';
+								content  += '</div>';
+								content  += '</div>';*/
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+								$('.deposite_name').append(content);                  
+								$('#drink_name-'+deposite_num).textinput().textinput('refresh', true);
+								$('#drink_expireddate-'+deposite_num).textinput().textinput('refresh', true);
+								$('#deposite_radio_calendar-'+deposite_num).checkboxradio().checkboxradio("refresh"); 
+								$('#deposite_radio_select-'+deposite_num).checkboxradio().checkboxradio("refresh"); 
+							//	$('#DepositImage-'+deposite_num)
+								$('#deposite_expire_date-'+deposite_num).textinput().textinput('refresh', true);
+								$('#deposite_select_date-'+deposite_num).selectmenu().selectmenu('refresh', true);
+								var d = new Date();
+								
+									if(obj_drink_deposite[deposite_num].pic_path != 'null'){
+									
+											//alert(deposite_num);
+										//var temp_cached = "?" + new Date().getTime();	
+										var imgurl = "http://"+Global_url+"/memberws"+obj_drink_deposite[deposite_num].pic_path;
+										var myImge = $("#DepositImage-"+deposite_num).attr("src",imgurl+ "?" + new Date().getTime());
+										$(myImge).load(function() {
+											if (status == "error") {
+												alert("Image Not Found");
+												$(this).attr('src', '../img/logo.jpg');
+											}
+											
+										});
+										/*$("#DepositImage-"+deposite_num).load(imgurl+temp_cached, function(response, status, xhr) {
+											if (status == "error") {
+												alert("Image Not Found");
+												$(this).attr('src', '../img/logo.jpg');
+											}
+											else{
+												//alert("Image  Found");
+											//	$(this).attr('src', imgurl);
+												$(this).removeAttr("src").attr("src", imgurl+temp_cached);
+												  // alert( $('#DepositImage-'+deposite_num).attr('src'));
+											}
+										});*/
+								    }	
+									
+									global_deposite_num = deposite_num;
+								}// end of for loop
+									
+							/*	for(var deposite_num = 0 ; deposite_num < obj_drink_deposite.length ; deposite_num++  ){
+									if(obj_drink_deposite[deposite_num].pic_path != 'null'){
+											setTimeout(function(){ 
+										
+											},1000);
+										var imgurl = "http://"+Global_url+"/memberws"+obj_drink_deposite[deposite_num].pic_path;
+										$("#DepositImage-"+deposite_num).load(imgurl+"?"+ Math.random(), function(response, status, xhr) {
+											if (status == "error") {
+												alert("Image Not Found");
+												$(this).attr('src', '../img/logo.jpg');
+											}
+											else{
+												//alert("Image  Found");
+											//	$(this).attr('src', imgurl);
+												$(this).removeAttr("src").attr("src", imgurl);
+											}
+										});
+								    }
+								}*/	
+										
+								
+								} // end of else 
+							}
+						 });
+						
+						
+					});// done pagebeforeshow', '#page_edit_deposite_page
+		
+			$(document).one('pagecreate', '#page_edit_deposite_page', function(){     
+					
+						$('#delete_all_deposits').click( function(){
+								alert("Delete "+ customer_id);
+								var action = "DELETE_ALL_DEPOSIT_METHOD";
+								var restaurant_id = 1;
+										 $( "#page_edit_dialog_delete" ).dialog({
+												resizable: false,
+												height:200,
+												modal: true,
+												buttons: {
+													"Delete": function() {
+														$( this ).dialog( "close" );
+														$.ajax({
+															type: "POST",
+															url: "http://"+Global_url+"/memberws/customers2/customer/11",
+															data: "action="+action+"&customer_id=" +customer_id+"&restaurant_id=" + restaurant_id,
+															cache: false,
+															dataType: "json",
+															success: function(data){
+																console.log("data['status'] : "+data['status'] );
+																if(data['status'] == "FAILURE"){
+																	alert("Somethig Error , please contact Connectiv asap");
+																}else{
+																$( this ).dialog( "close" );
+																	setTimeout(function(){ 
+																			$.mobile.navigate("#page_list_drink_deposite", { transition: "fade" 	});
+																		},50);
+																	
+														
+														
+																}
+															}
+														});
+													},
+													Cancel: function() {
+														$( this ).dialog( "close" );
+													}
+												}
+										}).dialog("open");
+					
+						});	
+					
+					
+					$('#add_button-deposite').click(function(){
+						setTimeout(function(){ 
+							$.mobile.navigate("#page_add_drink_deposite", { transition: "fade" });
+							//$.mobile.pageContainer.pagecontainer("change", "#page_add_user");
+							//$.mobile.defaultPageTransition = 'fade'
+							sessionStorage.clear();
+							sessionStorage.setItem("session_customer", drink_deposite_customer_id);
+							
+						},50);	
+					});	
+					
+			});		
+
+					function delete_deposit(x,y){
+					$("#page_edit_dialog_delete").addClass("ui-front");
+					$("#page_edit_dialog_delete").attr( "title", "Delete this package?" );
+					console.log("delete "+x);
+					var action = "DELETE_DEPOSIT_METHOD";
+						 $( "#page_edit_dialog_delete" ).dialog({
+							resizable: false,
+							height:200,
+							modal: true,
+							buttons: {
+								"Delete": function() {
+									$( this ).dialog( "close" );
+										$.ajax({
+												type: "POST",
+												url: "http://"+Global_url+"/memberws/customers2/customer/11",
+												data: "action="+action+ "&deposit_id=" + x ,
+												cache: false,
+												dataType: "json",
+												success: function(data){
+														console.log("data['status'] : "+data['status'] );
+														if(data['status'] == "FAILURE"){
+															alert("Somethig Error , please contact Connectiv asap");
+														}else{
+															console.log("Remove : #deposite_name-"+y);
+															$("#deposite_name-"+y).remove();
+															//window.location.reload()
+														}
+												}
+										});
+								},
+								Cancel: function() {
+									$( this ).dialog( "close" );
+								}
+							}
+						}).dialog("open");
+					
+				}
+						/*var lastid = $("#deposite_name").children().last().attr("id");
+						
+						if(lastid == undefined)
+						{
+							global_deposite_num = 0;
+						}
+						else
+						{
+							deposite_num = lastid.split("-");
+							deposite_num = parseInt(deposite_num[1])+1;		
+							if( $("#drink_expireddate-"+global_deposite_num).val() == "" || $("#drink_name-"+global_deposite_num).val() == "" ){
+							alert("Please fulfill in last form");
+							return;
+							}
+								global_deposite_num++;
+						}
+						alert(global_deposite_num);
+						
+							var content = '<div class="mem-wrap" id="deposite_name-'+global_deposite_num+'">';
+								content	 +='<div id="deposite_header-'+global_deposite_num+'" class="mem-header">';
+								content  +='<div class="ui-grid-a my-breakpoint">';
+								content  +='<div class="ui-block-a mem-panel">';
+								content  +='<label>#1</label>';
+								content  +='</div>';
+								content  +='<div class="ui-block-b">';
+								content  +='<div class="bubble block-inline">';
+							    content  +='<div class="talktext">';
+								content  +='<a class="delete-deposite-btn" id="delete_deposite-'+global_deposite_num+'" href="#"> ลบ</a>';
+								content  +='</div></div></div></div></div>';
+								content  +='<div class="deposite_detail">';
+								content  +='<div class="deposite-image">';
+								content  +=	'<div class="">';
+								content  +=	'<img src="../img/logo.jpg" alt="log" class="preview-image" id="largeImage-'+global_deposite_num+'"/></br>';
+								content  +=	'</div>';
+								content  +=	'<div class="preview-button">';
+								content  +=	'<button  id="take-photo-'+global_deposite_num+'"><img src="../img/icon-camera-128.png" width="48" height="48"></button>';
+								content  +=	'</div>';
+								content  +=	'</div>';
+								content  +=	'<div class="deposite_content">';
+								content  +=	'<div class="ui-grid-a">';
+								content  +=	'<div class="mb-content-middle">';
+								content  +=	'<div class="middle-block block-a" >';
+								content  +=	'<span for="drink_name">ชื่อเหล้า</span>';
+								content  +=	'</div>';
+								content  +=	'<div class="middle-block block-b" >';
+								content  +=	'<input type="text" name="drink_name-'+global_deposite_num+'" id="drink_name-'+global_deposite_num+'"  value="" class="ui-submit" />';
+								content  +=	'</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '<div class="mem-outdate">';
+								content  += '<div class="ui-grid-a">';
+								content  += '<div class="mb-content-middle">';
+								content  += '<div class="middle-block block-a" >';
+								content  += '<span for="drink_expireddate">หมดอายุ</span>';
+								content  += '</div>';
+								content  += '<div class="middle-block block-b " >';
+								content  +=	'<input type="text" name="drink_expireddate-'+global_deposite_num+'" id="drink_expireddate-'+global_deposite_num+'" value="" class="ui-submit" />';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '<div class="mb-content-left-deposite button-package">';
+								content  += '<div  class="package-input package-input-calendar" >';
+								content  += '<div class="carlendar">';
+								content  += '<input type="radio" name="radio-choice_'+global_deposite_num+'" id="deposite_radio_calendar-'+global_deposite_num+'" value="choice-2">';
+								content  += '<input type="text" name="deposite_expire_date-'+global_deposite_num+'" id="deposite_expire_date-'+global_deposite_num+'" class="ui-submit" readonly />';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '<div  class="package-input package-input-date" >';
+								content  += '<input type="radio" name="radio-choice_'+global_deposite_num+'" id="deposite_radio_select-'+global_deposite_num+'" value="choice-1" >';
+								content  += '<select class="custom-select" name="deposite_select_date-'+global_deposite_num+'" id="deposite_select_date-'+global_deposite_num+'">';
+								content  += '<option value="standard">เดือน</option>';
+								content  += '<option value="1">1</option>';
+								content  += '<option value="2">2</option>';
+								content  += '<option value="3">3</option>';
+								content  += '<option value="4">4</option>';
+								content  += '<option value="5">5</option>';
+								content  += '<option value="6">6</option>';
+								content  += '</select>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+								content  += '</div>';
+					    $('.deposite_name').append(content);                  
+						
+						
+						
+						$('#drink_name-'+global_deposite_num).textinput().textinput('refresh', true);
+						$('#drink_expireddate-'+global_deposite_num).textinput().textinput('refresh', true);
+						$('#deposite_radio_calendar-'+global_deposite_num).checkboxradio().checkboxradio("refresh"); 
+						$('#deposite_radio_select-'+global_deposite_num).checkboxradio().checkboxradio("refresh"); 
+						$('#take-photo-'+global_deposite_num).button().button('refresh');
+						$('#deposite_expire_date-'+global_deposite_num).textinput().textinput('refresh', true);
+						$('#deposite_select_date-'+global_deposite_num).selectmenu().selectmenu('refresh', true);
+						
+						
+						$('#delete_deposite-'+global_deposite_num).click(function(){
+							var did = $(this).attr("id");
+							var id = did.split("-");
+						$('#deposite_name-'+id[1]).remove();
+						});
+					
+						$( "#deposite_expire_date-"+global_deposite_num).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							   changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100'
+						});	
+						
+						$("#take-photo-"+global_deposite_num).click(function(){
+						capturePhoto();
+						
+						}); 
+						
+						
+					$('#deposite_radio_calendar-'+global_deposite_num).click(function(){
+						$("#drink_expireddate-"+global_deposite_num).val ("");	
+						$("#drink_expireddate-"+global_deposite_num).val(""+$("#deposite_expire_date-"+global_deposite_num).val());
+					}); // done  choose radio type calendar
+					
+					$('#deposite_radio_select-'+global_deposite_num).click(function(){
+						$("#drink_expireddate-"+global_deposite_num).val ("");	
+						var temp_value = $( "#deposite_select_date-"+global_deposite_num ).val();
+						$("#drink_expireddate-"+global_deposite_num).val(temp_value);
+					});// done  choose radio type select
+					
+					
+					$('#deposite_select_date-'+global_deposite_num).on('change', function() {
+						if($('#deposite_radio_select-'+global_deposite_num).is(':checked')){
+						var temp_value =$( "#deposite_select_date-"+global_deposite_num ).val();
+						$("#drink_expireddate-"+global_deposite_num).val(temp_value);
+						}
+					});
+				
+					$('#deposite_expire_date-'+global_deposite_num).on('change', function() {
+						if( $("#deposite_expire_date-"+global_deposite_num).val() && $('#deposite_radio_calendar-'+global_deposite_num).is(':checked')){
+						$("#drink_expireddate-"+global_deposite_num).val(""+$("#deposite_expire_date-"+global_deposite_num).val());
+						}
+					});
+					
+					
+					var pictureSource;   
+					var destinationType; 
+					document.addEventListener("deviceready",onDeviceReady,false);
+					function onDeviceReady() 
+					{
+						pictureSource=navigator.camera.PictureSourceType;
+						destinationType=navigator.camera.DestinationType;
+					}
+					function onPhotoURISuccess(imageURI) 
+					{	
+						alert(imageURI);
+						console.log(imageURI);
+						var largeImage = document.getElementById('largeImage-'+global_deposite_num);
+						largeImage.style.display = 'block';
+						largeImage.src = imageURI;
+					}
+					function onPhotoDataSuccess(imageURI) 
+					{ 
+						//alert(imageURI);
+						var imgProfile = document.getElementById('largeImage-'+global_deposite_num);
+						imgProfile.src =  imageURI;
+						if(sessionStorage.isprofileimage==1)
+						{
+							getLocation();
+						}
+						movePic(imageURI);
+					}
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+
+					function movePic(file)
+					{ 
+						window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError); 
+					} 
+
+					function resolveOnSuccess(entry)
+					{ 
+						var d = new Date();
+						var n = d.getTime();
+						var newFileName = n + ".jpg";
+						var myFolderApp = "MyAppFolder";
+						window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) 
+						{      
+							
+							fileSys.root.getDirectory( myFolderApp,
+							{create:true, exclusive: false},
+							function(directory) 
+							{
+								entry.moveTo(directory, newFileName,  successMove, resOnError);
+							},
+							resOnError);
+						},
+						resOnError);
+					}
+
+					function successMove(entry) 
+					{
+						sessionStorage.setItem('imagepath', entry.fullPath);
+					}
+					function resOnError(error) 
+					{
+						alert("resOnError "+error.code);
+					}
+					function capturePhoto() 
+					{
+						alert("get photo");
+						navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+						destinationType: Camera.DestinationType.FILE_URI,
+						correctOrientation: true	});
+					}
+
+					function getPhoto(source) 
+					{
+						
+						navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+						destinationType: destinationType.FILE_URI,
+						correctOrientation: true,
+						sourceType: source });
+					}
+
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+					
+			
+					}); //***************************************************** done add new drink_deposite
+					
+					/******************All Functions handle with date expired************************/
+				/*	$('#deposite_radio_calendar-1').click(function(){
+						$("#drink_expireddate-1").val ("");	
+						$("#drink_expireddate-1").val(""+$("#deposite_expire_date-1").val());
+					}); // done  choose radio type calendar
+					
+					$('#deposite_radio_select-1').click(function(){
+						$("#drink_expireddate-1").val ("");	
+						var temp_value = $( "#deposite_select_date-1" ).val();
+						$("#drink_expireddate-1").val(temp_value);
+					});// done  choose radio type select
+					
+					
+					$('#deposite_select_date-1').on('change', function() {
+						if($('#deposite_radio_select-1').is(':checked')){
+						var temp_value =$( "#deposite_select_date-1" ).val();
+						$("#drink_expireddate-1").val(temp_value);
+						}
+					});
+				
+					$('#deposite_expire_date-1').on('change', function() {
+						if( $("#deposite_expire_date-1").val() && $('#deposite_radio_calendar-1').is(':checked')){
+						$("#drink_expireddate-1").val(""+$("#deposite_expire_date-1").val());
+						}
+					});*/
+					/******************End Functions handle with date expired************************/
+					
+					
+					/*$('#delete_deposite-1').click(function(){
+						var did = $(this).attr("id");
+						var id = did.split("-");
+						
+						$('#deposite_name-'+id[1]).remove();
+					});
+					$( "#deposite_expire_date-1" ).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							   changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100'
+					});		
+					
+					$("#take-photo-1").click(function(){
+					capturePhoto()
+					});*/
+				
+					/*************************************All function handle with Camera*******************************************/
+					/*var pictureSource;   
+					var destinationType; 
+					document.addEventListener("deviceready",onDeviceReady,false);
+					function onDeviceReady() 
+					{
+						pictureSource=navigator.camera.PictureSourceType;
+						destinationType=navigator.camera.DestinationType;
+					}
+					function onPhotoURISuccess(imageURI) 
+					{	
+						alert(imageURI);
+						console.log(imageURI);
+						var largeImage = document.getElementById('largeImage-'+global_deposite_num);
+						largeImage.style.display = 'block';
+						largeImage.src = imageURI;
+					}
+					function onPhotoDataSuccess(imageURI) 
+					{ 
+						//alert(imageURI);
+						var imgProfile = document.getElementById('largeImage-'+global_deposite_num);
+						imgProfile.src =  imageURI;
+						if(sessionStorage.isprofileimage==1)
+						{
+							getLocation();
+						}
+						movePic(imageURI);
+					}
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+
+					function movePic(file)
+					{ 
+						window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError); 
+					} 
+
+					function resolveOnSuccess(entry)
+					{ 
+						var d = new Date();
+						var n = d.getTime();
+						var newFileName = n + ".jpg";
+						var myFolderApp = "MyAppFolder";
+						window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) 
+						{      
+							
+							fileSys.root.getDirectory( myFolderApp,
+							{create:true, exclusive: false},
+							function(directory) 
+							{
+								entry.moveTo(directory, newFileName,  successMove, resOnError);
+							},
+							resOnError);
+						},
+						resOnError);
+					}
+
+					function successMove(entry) 
+					{
+						sessionStorage.setItem('imagepath', entry.fullPath);
+					}
+					function resOnError(error) 
+					{
+						alert("resOnError "+error.code);
+					}
+					function capturePhoto() 
+					{
+						alert("get photo");
+						navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+						destinationType: Camera.DestinationType.FILE_URI,
+						correctOrientation: true	});
+					}
+
+					function getPhoto(source) 
+					{
+						
+						navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+						destinationType: destinationType.FILE_URI,
+						correctOrientation: true,
+						sourceType: source });
+					}
+
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+					
+					
+					function upload_Photo(image_URI,id,drink_deposite_expired) {
+					  //  window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+					
+					//	alert("Ready to Root_dir :"+Root_dir);
+						
+						var imageURI = image_URI;
+						var drink_deposite_id = id;
+						var date  = drink_deposite_expired;
+						var options = new FileUploadOptions();
+						options.fileKey="file";
+						//options.fileName= imageURI.substr(imageURI.lastIndexOf('/')+1);
+						options.mimeType="image/jpeg";
+				
+						//add on data
+						var params = new Object();
+						params.drink_deposite_id = drink_deposite_id;
+						params.date = date;
+						options.params = params;
+
+						var ft = new FileTransfer();
+						ft.upload(Root_dir, "http://"+Global_url+"/memberws/customers2/upload_deposite_photo/11/1", win, fail, options);
+					}
+
+					function win(r) {
+						alert("Code = " + r.responseCode+"/n"+" Response = " + r.response+" Sent = " + r.bytesSent);
+					}
+
+					function fail(error) {
+						alert("An error has occurred: Code = " + error.code+" upload error source " + error.source+" upload error target " + error.target);
+					}
+			
+			}); // done create page	edit	
+			//***************************** End Deposite DETAIL *******************************/		
+					
+	
+		
+			
+					function refreshPage() {
+						$.mobile.changePage(
+						window.location.href,
+						{
+							allowSamePageTransition : true,
+							transition              : 'none',
+							showLoadMsg             : false,
+							reloadPage              : true
+						}
+						);
+					}
+						
+		
+		</script>
+    </head>
+    	
+    <body>			
+	<div id="container">
+	
+	<!-- END add deposite -->
+	<div data-role="page" id="page_list_drink_deposite" class="ui-responsive-panel">
+		
+			<div data-role="content"  class="scrollable ui-content scroll-list">
+						<div class="content-topbutton">
+						<a href="./customer_page.html#page_add_user" class="ui-btn" rel="external" >เพิ่มสมาชิก</a>
+							 
+							<!-- <a href="#page_add_drink_deposite" class="ui-btn">เพิ่มสมาชิก</a> -->
+						</div>
+						<div data-role="fieldcontain">
+							<input id="deposit_search" type="search" name="deposit_search"  value="" />
+						</div>
+						
+						<div class="content-table">
+							 <table id="CustomerTable" data-role="table" class="ui-responsive footable">
+							  <thead>
+								<tr>
+								  <div>
+								  <th > ID.</th>
+								  <th >ชื่อ</th>
+								  <th >ฝากเหล้า</th>
+								  <th >หมดอายุ</th>
+								  </div>
+								</tr>
+							  </thead>
+							  <tbody id="CustomerBody">
+								
+							  </tbody>
+							</table>
+						</div>
+			</div>
+	
+			<script type="text/javascript">
+				
+			</script>
+	</div>
+		
+	
+	
+	<div data-role="page" id="page_edit_deposite_page" class="ui-responsive-panel">
+			
+	<div data-role="content"  class="scrollable ui-content scroll-list">
+				<div id="page_edit_dialog_delete" title="You want to delete it?">
+						<span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>These items will be permanently deleted and cannot be recovered. Are you sure?
+				</div>
+				
+			<form id="edit_form" >
+					<div class="user-image">
+					   <img src="../img/logo.jpg" alt="log" class="img-logo" id="page_edit_deposite_largeImage"/></br>
+					</div>
+
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="user_id">ไอดี</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="user_id" id="txt_user_id" value="" class="ui-submit"  onfocus="this.style.bakgroundColor='red'" onblur="this.style.bakgroundColor='white'"/>
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="username">ชื่อสมาชิก</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="username" readonly id="txt_username" value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="phone_number">เบอร์มือถือ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="phone_number" readonly id="txt_phone_number" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="brithday">วันเกิด</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="brithday" id="txt_brithday" readonly value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="email">อีเมล์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="email" id="txt_email" value="" readonly class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="type">หมายเหตุ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<textarea type="text" name="type" id="txt_type" readonly value="" class="ui-submit" ></textarea >
+						</div>
+						
+					</div>
+		</form>
+	<div class="clear-block"></div>
+		
+	<div class="deposite_name" id="deposite_name">
+		<div class="mem-wrap" id="deposite_name-1">	
+			<div id="header-1" class="mem-header">
+				<div class="ui-grid-a my-breakpoint">
+					<div class="ui-block-a mem-panel">
+						<label>#1</label>
+					</div>
+					<div class="ui-block-b">
+						<div class="bubble block-inline">
+							<div class="talktext">
+								<a class="delete-deposite-btn" id="delete_deposite-1" href="#"> ลบ</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+
+		<div class="deposite_detail">
+			<div class="deposite-image">
+				<div class="">	 
+					<img src="../img/logo.jpg" alt="log" class="preview-image" id="largeImage-1"/></br>
+				</div>
+				<div class="preview-button">
+					<button  id="take-photo-1"><img src="../img/icon-camera-128.png" width="48" height="48"></button>
+				</div>
+			</div>	
+			<div class="deposite_content">
+					<div class="ui-grid-a">
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="drink_name">ชื่อเหล้า</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="drink_name-1" id="drink_name-1"  value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					</div>	
+					<div class="mem-outdate">
+					<div class="ui-grid-a">
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="drink_expireddate">หมดอายุ</span>
+							</div>
+						<div class="middle-block block-b " >
+							<input type="text" name="drink_expireddate-1" id='drink_expireddate-1' value="" class="ui-submit" />
+						</div>
+						
+						</div>
+				
+					
+					<div class="mb-content-left-deposite button-package">
+					
+						<div  class="package-input package-input-calendar" >
+								<div class="carlendar">
+									<input type="radio" name="radio-choice" id="deposite_radio_calendar-1" value="choice-2">
+									<input type="text" name="deposite_expire_date-1" id="deposite_expire_date-1" class="ui-submit" readonly />
+								 </div>
+						</div>
+					
+						<div  class="package-input package-input-date" >
+							  <input type="radio" name="radio-choice" id="deposite_radio_select-1" value="choice-1" >
+							  <select class="custom-select" name="deposite_select_date-1" id="deposite_select_date-1">
+								<option value="standard">เดือน</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+							  </select>
+						
+						</div>
+		
+					</div>
+				
+					</div>	
+			</div>
+			</div>
+			</div>
+		</div>
+	</div>
+				<div class="clear-block"></div>	
+					<div class="content-topbutton align-right">
+							<a class="ui-btn" id="add_button-deposite">เพิ่มรายการ</a>
+					</div>
+					<div class="clear-block"></div>	
+					
+					<div class="ui-grid-a  mb-content-middle content-login">
+					
+					
+					  <div class="ui-block-b custom-block-b">
+						<button class="ui-btn" id="delete_all_deposits" type="submit">ลบทั้งหมด</button>
+					  </div>
+					  
+					</div>
+					<div class="clear-block"></div>
+		
+		
+		
+			
+			
+	</div>
+	
+	
+		
+	</div><!-- done page edit drink deposite -->
+	
+	<div data-role="page" id="page_add_drink_deposite" class="ui-responsive-panel">
+	<script type="text/javascript">
+				$(document).on("pagebeforehide","#page_add_drink_deposite",function(){ // When leaving pagetwo
+			
+				});
+				
+				$(document).on("pagebeforeshow","#page_add_drink_deposite",function(){ // When entering page add
+				$("#dialog-continue-add-deposite").hide();
+				alert(sessionStorage.getItem("session_customer"));	
+				Global_customer_id = sessionStorage.getItem("session_customer");
+					$.ajax({
+							type: "GET",
+							url: "http://"+Global_url+"/memberws/customers2/customer/11/"+ Global_customer_id,
+							cache: false,
+							dataType: "json",
+							success: function(data){
+								if(data['code'] == 2){
+					
+					
+								}else{
+									var obj = JSON.parse(JSON.stringify(data));
+									
+									 if(obj.user_img_path != 'null'){
+										var imgurl = "http://"+Global_url+"/memberws"+obj.user_img_path;
+										$("#deposite_add_largeImage").load(imgurl, function(response, status, xhr) {
+											if (status == "error") {
+												alert("Image Not Found");
+												$(this).attr('src', '../img/logo.jpg');
+											}
+											else{
+												//alert("Image  Found");
+												$(this).attr('src', imgurl);
+											}
+										});
+									}
+									
+									var myDate = new Date(1000* obj.birthday);
+									console.log(myDate.toString());
+									console.log(myDate.toLocaleDateString());
+									console.log(myDate.toUTCString());
+									$("#deposite_add_txt_user_id").val(obj.user_id);
+									$("#deposite_add_txt_username").val(obj.name);
+									$("#deposite_add_txt_phone_number").val(obj.phone);
+									$("#deposite_add_txt_brithday").val(myDate.toLocaleDateString());
+									$("#deposite_add_txt_email").val(obj.email);
+									$("#deposite_add_txt_type").val(obj.note);
+									
+									
+									
+								}
+							}
+						});
+				
+				});
+
+				$(document).one( 'pagecreate',"#page_add_drink_deposite",function(event){	
+					var status = "" ;
+					var reasons = "" ;
+					var Root_dir ="";
+					var pictureSource;   
+					var destinationType; 
+					var User_imageURI ="" ;
+					document.addEventListener("deviceready",onDeviceReady,false);
+					function onDeviceReady() 
+					{
+						pictureSource=navigator.camera.PictureSourceType;
+						destinationType=navigator.camera.DestinationType;
+					}
+					function onPhotoURISuccess(imageURI) 
+					{	
+						//alert(imageURI);
+						console.log(imageURI);
+						var largeImage = document.getElementById('add_page_largeImage-1');
+						largeImage.style.display = 'block';
+						User_imageURI = imageURI;
+						largeImage.src = imageURI;
+					}
+					function onPhotoDataSuccess(imageURI) 
+					{ 
+						//alert(imageURI);
+						var imgProfile = document.getElementById('add_page_largeImage-1');
+						imgProfile.src =  imageURI;
+						
+						if(sessionStorage.isprofileimage==1)
+						{
+							getLocation();
+						}
+						movePic(imageURI);
+					}
+					function onFail(message) 
+					{
+						alert('Failed because: ' + message);
+					}
+
+					function movePic(file)
+					{ 
+						window.resolveLocalFileSystemURI(file, resolveOnSuccess, resOnError); 
+					} 
+
+					function resolveOnSuccess(entry)
+					{ 
+						var d = new Date();
+						var n = d.getTime();
+						var newFileName = n + "_Conectiv.jpg";
+						var myFolderApp = "MyAppFolder";
+						User_imageURI = newFileName;
+						window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSys) 
+						{      
+							
+							fileSys.root.getDirectory( myFolderApp,
+							{create:true, exclusive: false},
+							function(directory) 
+							{
+								
+								entry.moveTo(directory, newFileName,  successMove, resOnError);
+							},
+							resOnError);
+						},
+						resOnError);
+					}
+
+					function successMove(entry) 
+					{
+						Root_dir=  entry.toURL();
+						sessionStorage.setItem('imagepath', entry.fullPath);
+						console.log("Test name "+entry.name);
+						console.log("Test root name "+entry.root.name);
+						
+					}
+					function resOnError(error) 
+					{
+						alert("resOnError "+error.code);
+					}
+					function deposit_capturePhoto() 
+					{
+						navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+						destinationType: Camera.DestinationType.FILE_URI,
+						correctOrientation: true	});
+					}
+
+					function getPhoto(source) 
+					{
+						navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+						destinationType: destinationType.FILE_URI,
+						correctOrientation: true,
+						sourceType: source });
+					}
+
+					
+					/*****************************End of media Section******************************/
+					/******************All Functions handle with date expired************************/
+					$('#add_page_deposite_radio_calendar-1').click(function(){
+						$("#add_page_drink_expireddate-1").val ("");	
+						$("#add_page_drink_expireddate-1").val(""+$("#add_page_deposite_expire_date-1").val());
+					}); // done  choose radio type calendar
+					
+					$('#add_page_deposite_radio_select-1').click(function(){
+						$("#add_page_drink_expireddate-1").val ("");	
+						var temp_value = $( "#add_page_deposite_select_date-1" ).val();
+						$("#add_page_drink_expireddate-1").val(temp_value);
+					});// done  choose radio type select
+					
+					
+					$('#add_page_deposite_select_date-1').on('change', function() {
+						if($('#add_page_deposite_radio_select-1').is(':checked')){
+						var temp_value =$( "#add_page_deposite_select_date-1" ).val();
+						$("#add_page_drink_expireddate-1").val(temp_value);
+						}
+					});
+				
+					$('#add_page_deposite_expire_date-1').on('change', function() {
+						if( $("#add_page_deposite_expire_date-1").val() && $('#add_page_deposite_radio_calendar-1').is(':checked')){
+						$("#add_page_drink_expireddate-1").val(""+$("#add_page_deposite_expire_date-1").val());
+						}
+					});
+					/******************End Functions handle with date expired************************/
+					
+					
+					$('#delete_deposite-1').click(function(){
+						var did = $(this).attr("id");
+						var id = did.split("-");
+						
+						$('#deposite_name-'+id[1]).remove();
+					});
+					
+					$( "#add_page_deposite_expire_date-1" ).datepicker({	
+							dateFormat: "dd/mm/yy",
+							  changeMonth: true,
+							  changeYear: true,
+							 yearRange: "'"+new Date().getDate()+':2100'
+					});		
+					
+					$("#add_page_take-photo-1").click(function(){
+					deposit_capturePhoto();
+					});
+					
+					function upload_Photo(image_URI,id,drink_deposite_expired) {
+					  //  window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+					
+					//	alert("Ready to Root_dir :"+Root_dir);
+						
+						var imageURI = image_URI;
+						var drink_deposite_id = id;
+						var date  = drink_deposite_expired;
+						var options = new FileUploadOptions();
+						options.fileKey="file";
+						//options.fileName= imageURI.substr(imageURI.lastIndexOf('/')+1);
+						options.mimeType="image/jpeg";
+				
+						//add on data
+						var params = new Object();
+						params.drink_deposite_id = drink_deposite_id;
+						params.date = date;
+						options.params = params;
+
+						var ft = new FileTransfer();
+						//alert("Root_dir "+Root_dir);
+						ft.upload(Root_dir, "http://"+Global_url+"/memberws/customers2/upload_deposite_photo/11/1", win, fail, options);
+					}
+
+					function win(r) {
+						status = true;
+						reasons = "Code = " + r.responseCode+"/n"+" Response = " + r.response+" Sent = " + r.bytesSent ;
+						alert("Code = " + r.responseCode+"/n"+" Response = " + r.response+" Sent = " + r.bytesSent);
+					}
+
+					function fail(error) {
+						status = false;
+						reasons = "An error has occurred: Code = " + error.code+" upload error source " + error.source+" upload error target " + error.target;
+						alert("An error has occurred: Code = " + error.code+" upload error source " + error.source+" upload error target " + error.target);
+					}
+					$("#add_btn_deposite_page").click(function(){
+					
+						var drink_deposite_name = $("#add_page_drink_name-1").val();
+						var drink_deposite_expired = $("#add_page_drink_expireddate-1").val();
+						var customer_id	= Global_customer_id; 
+						var action = "ADD_DEPOSITE_METHOD";
+							
+								$.ajax({
+									type: 'POST',
+									url: 'http://'+Global_url+'/memberws/customers2/customer/11/',
+									data: "action="+action+ "&drink_deposite_name=" + drink_deposite_name + "&drink_deposite_expired=" +drink_deposite_expired + "&customer_id="+customer_id,
+									cache: false,
+									dataType:  "json",
+									success: function(data){
+									
+										if(data['status'] == "SUCCESS"){
+											if(User_imageURI!=""){
+												var deposite_id = data['id'];
+												upload_Photo(User_imageURI,deposite_id,drink_deposite_expired);
+												alert(Status +" "+ reasons)
+												$( "#dialog-continue-add-deposite" ).dialog({
+														resizable: false,
+														height:140,
+														modal: true,
+														buttons: {
+																	"Yes": function() {
+																		$("#add_page_drink_name-1").val("");
+																		$("#add_page_drink_expireddate-1").val("");
+																		$("#add_page_take-photo-1").attr('src', '../img/logo.jpg');
+																		 $( this ).dialog( "close" );
+																	},
+																	"No": function() {
+																		 $( this ).dialog( "close" );
+																		setTimeout(function(){ 
+																			$.mobile.navigate("#page_list_drink_deposite", { transition: "fade" 	});
+																		},50);
+																		
+																	}
+														}
+												});
+											}else{
+											    $( "#dialog-continue-add-deposite" ).dialog({
+														resizable: false,
+														height:140,
+														modal: true,
+														buttons: {
+																	"Yes": function() {
+																		$("#add_page_drink_name-1").val("");
+																		$("#add_page_drink_expireddate-1").val("");
+																		$("#add_page_take-photo-1").attr('src', '../img/logo.jpg');
+																		 $( this ).dialog( "close" );
+																	},
+																	"No": function() {
+																		 $( this ).dialog( "close" );
+																		setTimeout(function(){ 
+																			$.mobile.navigate("#page_list_drink_deposite", { transition: "fade" 	});
+																		},50);
+																		
+																	}
+														}
+												});
+											//alert("Cannot upload "+reasons);
+											return;
+											}
+											
+										
+											
+										}else{
+										
+										
+										}
+									},
+									error: function(msg) {
+										console.log('failure' + msg );
+									}
+								});
+							
+					});
+				});
+	</script>
+		<div data-role="content"  class="scrollable ui-content scroll-list">
+			<div id="dialog-continue-add-deposite" title="Barmember">
+				<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Do you want to add more?</p>
+
+			</div>
+				<form id="deposite_add_form" >
+						<div class="user-image">
+							<img src="../img/logo.jpg" alt="log" class="img-logo" id="deposite_add_largeImage"/></br>
+						</div>
+ 
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="deposite_add_user_id">ไอดี</span>
+							</div>
+							<div class="middle-block block-b" >
+								<input type="text" name="deposite_add_user_id" id="deposite_add_txt_user_id" value="" class="ui-submit"  onfocus="this.style.bakgroundColor='red'" onblur="this.style.bakgroundColor='white'"/>
+							</div>					
+						</div>
+						<div class="clear-block"></div>
+					
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="username">ชื่อสมาชิก</span>
+							</div>
+							<div class="middle-block block-b" >
+								<input type="text" name="deposite_add_username" readonly id="deposite_add_txt_username" value=""  />
+							</div>
+						</div>
+						<div class="clear-block"></div>	
+				
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="phone_number">เบอร์มือถือ</span>
+							</div>
+							<div class="middle-block block-b" >
+								<input type="text" name="deposite_add_phone_number" readonly id="deposite_add_txt_phone_number" value="" class="ui-submit" />
+							</div>	
+						</div>
+						<div class="clear-block"></div>
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="brithday">วันเกิด</span>
+							</div>
+							<div class="middle-block block-b" >
+								<input type="text" name="deposite_add_brithday" id="deposite_add_txt_brithday" readonly value="" class="ui-submit" />
+							</div>
+						</div>
+						<div class="clear-block"></div>
+					
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="email">อีเมล์</span>
+							</div>
+							<div class="middle-block block-b" >
+								<input type="text" name="deposite_add_email" id="deposite_add_txt_email" value="" readonly class="ui-submit" />
+							</div>
+						</div>
+						<div class="clear-block"></div>
+					
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="type">หมายเหตุ</span>
+							</div>
+							<div class="middle-block block-b" >
+								<textarea type="text" name="deposite_add_type" id="deposite_add_txt_type" readonly value="" class="ui-submit" ></textarea >
+							</div>
+						</div>
+				</form>
+					<div class="clear-block"></div>
+	<div class="add_page_deposite_name" id="add_page_deposite_name">
+			<div class="mem-wrap" id="add_page_deposite_name-1">	
+					<div id="add_page_header-1" class="mem-header">
+						<div class="ui-grid-a my-breakpoint">
+								<!--<div class="ui-block-a mem-panel">
+									<label>#1</label>
+								</div>
+								<div class="ui-block-b">
+									<div class="bubble block-inline">
+										<div class="talktext">
+											<a class="delete-deposite-btn" id="add_page_delete_deposite-1" href="#"> ลบ</a>
+										</div>
+									</div>
+								</div> !-->
+						</div>
+					</div>
+
+			<div class="deposite_detail">
+				<div class="deposite-image">
+					<div class="">	 
+						<img src="../img/logo.jpg" alt="log" class="preview-image" id="add_page_largeImage-1"/></br>
+					</div>
+					<div class="preview-button">
+						<button  id="add_page_take-photo-1"  ><img src="../img/icon-camera-128.png" width="48" height="48"></button>
+					</div>
+				</div>	
+				<div class="deposite_content">
+					<div class="ui-grid-a">
+						<div class="mb-content-middle">
+							<div class="middle-block block-a" >
+								<span for="drink_name">ชื่อเหล้า</span>
+							</div>
+							<div class="middle-block block-b" >
+								<input type="text" name="add_page_drink_name-1" id="add_page_drink_name-1"  value="" class="ui-submit" />
+							</div>
+						</div>
+					</div>	
+					<div class="mem-outdate">
+						<div class="ui-grid-a">
+							<div class="mb-content-middle">
+								<div class="middle-block block-a" >
+									<span for="drink_expireddate">หมดอายุ</span>
+								</div>
+								<div class="middle-block block-b " >
+									<input type="text" name="add_page_drink_expireddate-1" id='add_page_drink_expireddate-1' value="" class="ui-submit" />
+								</div>
+							</div>
+						<div class="mb-content-left-deposite button-package">
+					
+							<div  class="package-input package-input-calendar" >
+								<div class="carlendar">
+									<input type="radio" name="add_page_radio-choice" id="add_page_deposite_radio_calendar-1" value="choice-2">
+									<input type="text" name="add_page_deposite_expire_date-1" id="add_page_deposite_expire_date-1" class="ui-submit" readonly />
+								 </div>
+							</div>
+							<div  class="package-input package-input-date" >
+								<input type="radio" name="add_page_radio-choice" id="add_page_deposite_radio_select-1" value="choice-1" >
+								<select class="custom-select" name="add_page_deposite_select_date-1" id="add_page_deposite_select_date-1">
+								<option value="standard">เดือน</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+								<option value="4">4</option>
+								<option value="5">5</option>
+								<option value="6">6</option>
+								</select>				
+							</div>
+						</div>
+						</div>	
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>	
+	
+			<div class="ui-grid-a  mb-content-middle content-login">
+				<div class="ui-block-a custom-block-a">
+					<button id="add_btn_deposite_page" class="ui-btn">บันทึก</button>
+				</div>
+			</div>
+	</div><!-- done content -->
+	
+
+	</div> <!-- done Add page -->
+	
+	
+		<script type="text/javascript" src="../js/index.js"></script>
+		<script type="text/javascript" src="../js/menubar.js"></script>
+	</div>
+    </body>
+</html>

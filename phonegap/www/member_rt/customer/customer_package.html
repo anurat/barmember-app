@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+	   <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<meta name="msapplication-tap-highlight" content="no" />
+        <title>MEMBER DEMO APP</title>
+		
+		<!-- JS -->
+		<script src="../../js/jquery-1.9.1.min.js"></script>
+		<script src="../../js/jquery.mobile-1.4.2.min.js"></script>
+		<script src="../../js/script.js"></script>
+	
+		<!-- CSS -->
+		<link rel="stylesheet" href="../../css/jquery.mobile-1.4.2.css" />
+		<link rel="stylesheet" href="../../css/jquery.mobile-1.4.2.min.css" />
+		<link rel="stylesheet" href="../../css/styles.css" />
+    </head>
+	
+	
+	
+    <body>
+		<div id="container">
+		<div data-role="page">
+				
+			<div data-role="content"  class="scrollable ui-content scroll-list">
+			<form id="add_form" >
+					<div class="user-image">
+					   <img src="../../img/logo.jpg" alt="log" class="img-logo" id="largeImage"/></br>
+					</div>
+
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="user_id">ไอดี</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="user_id" id="user_id" value="" class="ui-submit" readonly onfocus="this.style.bakgroundColor='red'" onblur="this.style.bakgroundColor='white'"/>
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="username">ชื่อสมาชิก</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="username" readonly id='username' value=""  />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>	
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="phone_number">เบอร์มือถือ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="phone_number" readonly id="phone_number" value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+				
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="brithday">วันเกิด</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="brithday" id="brithday" readonly value="" class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="email">อีเมล์</span>
+						</div>
+						<div class="middle-block block-b" >
+							<input type="text" name="email" id="email" value="" readonly class="ui-submit" />
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mb-content-middle">
+						<div class="middle-block block-a" >
+							<span for="type">หมายเหตุ</span>
+						</div>
+						<div class="middle-block block-b" >
+							<textarea type="text" name="type" id="type" readonly value="" class="ui-submit" ></textarea >
+						</div>
+						
+					</div>
+					<div class="clear-block"></div>
+					
+					<div class="mem-wrap">
+					  <div class="mem-header">
+							<div class="ui-grid-a my-breakpoint">
+							  <div class="ui-block-a mem-panel">
+								<label>PACKAGE VIP001</label>
+							  </div>
+							  <div class="ui-block-b">
+									<div class="bubble block-inline">
+										<div class="talktext">
+											<a href="#">ลบ</a>
+										 </div>
+									</div>
+							  </div>
+							</div>
+					  </div>
+					  <div class="mem-item">
+						  <div class="">
+							  <div class="mem-panel mem-icon mem-icon-desc">
+									<label data-inline="true" class="alignleft">RED LABEL</label>
+									<label data-inline="true" class="alignright ">5/10</label>
+							  </div>
+							  
+							  <div class="mem-icon">
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+							  </div>
+						  </div>
+						     <div class="">
+							  <div class="mem-panel mem-icon mem-icon-desc">
+									<label data-inline="true" class="alignleft">BLACK LABEL</label>
+									<label data-inline="true" class="alignright ">8/10</label>
+							  </div>
+							  <div class="mem-icon">
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext" ></a>
+									<a href="index.html" data-role="button" data-inline="true" data-icon="star" data-iconpos="notext"></a>
+							  </div>
+						  </div>
+						    <div class="">
+							  <div class="mem-panel mem-icon mem-icon-desc">
+									<label data-inline="true" class="alignleft">RED LABEL</label>
+									<label data-inline="true" class="alignright ">2/5</label>
+							  </div>
+							  <div class="mem-icon">
+									<div class="circle circle-red" ></div>
+									<div class="circle circle-red"></div>
+									<div class="circle circle-white"></div>
+									<div class="circle circle-white"></div>
+									<div class="circle circle-white"></div>
+			
+							  </div>
+						  </div>
+					  </div>
+					  <div class="mem-outdate">
+					  
+							<div class="ui-grid-a my-breakpoint">
+							  <div class="ui-block-a mem-panel">
+								<label>หมดอายุ</label>
+							  </div>
+
+							  <div class="ui-block-b mem-panel">
+								<label>1 ตุลาคม 2558</label>
+							  </div>
+							</div>
+
+					  </div>
+					  <div>
+						   <div class="mem-panel">
+								<label>FREE MIXER</label>
+						  </div>
+						   <div class="mem-panel">
+								<label>250/DRINK</label>
+						  </div>
+						   <div class="mem-panel">
+								<label>DISCOUNT 10%</label>
+						  </div>
+						</div>
+						<div class="mem-panel mem-note-panel">
+							<label>NOTE:</label>
+						
+							<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+						</div>
+					 </div>
+				
+			</form>
+			</div>
+		</div>
+		</div>
+
+    </body>
+</html>
